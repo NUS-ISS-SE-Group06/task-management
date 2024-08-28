@@ -54,7 +54,7 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    java -jar target/task-tracker-api-0.0.1-SNAPSHOT.jar
    \`\`\`
 
-### Configuration
+### Configuration 
 
 The application can be configured via the `application.yml` or `application.properties` file located in the `src/main/resources` directory. Key configurations include:
 
