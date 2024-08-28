@@ -4,6 +4,7 @@ on:
   # The test-build : indicating whether your code commits are not breaking during compilation.
   # The unit-test : indicating whether your funtionalities are not breaking.
   # The Sonar : indicating whether your code commits are not violating code scan rules.
+  ##
   push:
     branches:
       - main
@@ -90,6 +91,8 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+
+
         
 
     
