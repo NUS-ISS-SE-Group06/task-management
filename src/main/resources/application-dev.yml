@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:sqlite:/Users/onggowahyudi/nus/task-tracker-api/resources/db/tasktracker.db
+    url: jdbc:sqlite:/Users/onggowahyudi/nus/task-management-service/resources/db/tasktracker.db
     driver-class-name: org.sqlite.JDBC
     username:
     password:
@@ -14,18 +14,17 @@ spring:
       enabled: true
   kafka:
     bootstrap-servers: localhost:9092
+    producer:
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
     consumer:
       group-id: task-processing-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      topics :
-
-
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
 
 
 

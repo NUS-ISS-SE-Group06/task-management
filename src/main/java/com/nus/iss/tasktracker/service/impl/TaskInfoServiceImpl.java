@@ -8,6 +8,7 @@ import com.nus.iss.tasktracker.repository.TaskInfoRepository;
 import com.nus.iss.tasktracker.service.KafkaProducerService;
 import com.nus.iss.tasktracker.service.TaskInfoService;
 import com.nus.iss.tasktracker.util.TaskTrackerConstant;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
+
 @Service
 public class TaskInfoServiceImpl implements TaskInfoService {
 
@@ -25,6 +27,7 @@ public class TaskInfoServiceImpl implements TaskInfoService {
     private final TaskInfoRepository taskInfoRepository;
     private final KafkaProducerService kafkaProducerService;
 
+    @Autowired
     public TaskInfoServiceImpl(TaskInfoMapper taskInfoMapper, TaskInfoRepository taskInfoRepository, KafkaProducerService kafkaProducerService) {
         this.taskInfoMapper = taskInfoMapper;
         this.taskInfoRepository = taskInfoRepository;
@@ -98,8 +101,10 @@ public class TaskInfoServiceImpl implements TaskInfoService {
         // Save and map to dto
         TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
 
+
         //Emit TaskId
         kafkaProducerService.sendMessage(KafkaTopic.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+
         return result;
     }
 public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
