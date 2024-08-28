@@ -259,7 +259,7 @@ public class TaskInfoControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body.taskId").value(1))
-                .andExpect(jsonPath("$.message").value("Task Deleted Successfully."))
+                .andExpect(jsonPath("$.message").value("Task Record Deleted Successfully."))
                 .andExpect(jsonPath("$.error").value(""));
 
 

@@ -2,6 +2,8 @@ package com.nus.iss.tasktracker.util;
 
 public class TaskTrackerConstant {
 
+    public static final String CROSS_ORIGIN_URL ="http://165.22.100.234:3000";
+    public static final String CROSS_ORIGIN_LOCALHOST_URL ="http://localhost:3000";
     public static final String JWT_MAGIC_WORD = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
     public static final int JWT_EXPIRATION_MINUTES = 10;
@@ -10,6 +12,11 @@ public class TaskTrackerConstant {
 
     public static final String SIGNUP_INVALID_INPUT = "%s - Please input value!";
     public static final String FIELD_INVALID_INPUT = "%s - Please input value!";
+
+    public static final String RECORD_CREATED_SUCCESSFULLY = "%s Record Created Successfully.";
+    public static final String RECORD_DELETED_SUCCESSFULLY = "%s Record Deleted Successfully.";
+    public static final String RECORD_UPDATED_SUCCESSFULLY = "%s Record Updated Successfully.";
+    public static final String RECORD_RETRIEVED_SUCCESSFULLY = "%s Record Retrieved Successfully.";
 
     public static final String SIGNUP_INVALID_INPUT_PASSWORD = "Invalid Password. Password must be at least 8 characters long\n" +
             " and contain a combination of letters, numbers, and special characters.";
@@ -51,7 +58,10 @@ public class TaskTrackerConstant {
     public static final String SERVICE_ACCESS_WITHOUT_TOKEN ="Service Accessed Without Token";
     public static final String SERVICE_ACCESS_NOT_ALLOWED ="Access to the Service is Not Allowed";
 
+    public static final String TASK_TRACKER_MODULE_TASK ="Task";
+    public static final String TASK_TRACKER_MODULE_USER ="User";
+    public static final String TASK_TRACKER_MODULE_COMMENT ="Comment";
 
-
+    public static final String TASK_TRACKER_MODULE_GROUP ="Group";
 
 }

@@ -4,14 +4,14 @@ import com.nus.iss.tasktracker.dto.TaskCommentDTO;
 import com.nus.iss.tasktracker.dto.Response;
 import com.nus.iss.tasktracker.service.CommentInfoService;
 import com.nus.iss.tasktracker.util.CustomResponseHandler;
+import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-//
+
 @RestController
 @RequestMapping("/comment-info")
 @Slf4j
@@ -25,9 +25,8 @@ public class CommentInfoController {
     }
 
     @GetMapping("/{id}")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> getCommentById(@PathVariable int id) throws RuntimeException{
-        log.info("Comment endpoint called with id {}", id);
         Object responseBody=null;
         HttpStatus status = HttpStatus.OK;
         String successOrFailMessage="";
@@ -42,15 +41,14 @@ public class CommentInfoController {
             successOrFailMessage ="Comment Info Retrieval Failed.";
             return CustomResponseHandler.handleFailResponse(responseBody, status, successOrFailMessage);
         }
+
     }
 
 
     @PostMapping("/create")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> createComment(@RequestBody TaskCommentDTO requestDTO) throws RuntimeException {
-        log.info("requestDTO: "+requestDTO);
         TaskCommentDTO taskCommentDTO = commentInfoService.saveComment(requestDTO);
-        log.info("commentDTO : {}", taskCommentDTO);
         Object responseBody=null;
         HttpStatus status = HttpStatus.OK;
         String successOrFailMessage="";
@@ -66,9 +64,8 @@ public class CommentInfoController {
     }
 
     @GetMapping("/comment-list/{id}")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public List<TaskCommentDTO> getAllCommentsForTask(@PathVariable int id){
-        log.info("Commentlist endpoint called with task id {}", id);
         return commentInfoService.getAllCommentsForTask(id);
     }
 }

@@ -3,10 +3,9 @@ package com.nus.iss.tasktracker.service;
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
 import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
+import com.nus.iss.tasktracker.model.KafkaTopic;
 import com.nus.iss.tasktracker.model.TaskInfo;
-import com.nus.iss.tasktracker.model.UserInfo;
 import com.nus.iss.tasktracker.repository.TaskInfoRepository;
-import com.nus.iss.tasktracker.repository.UserInfoRepository;
 import com.nus.iss.tasktracker.service.impl.TaskInfoServiceImpl;
 import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,11 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -30,11 +27,12 @@ import static org.mockito.Mockito.*;
 public class TaskInfoServiceImplTest {
     @Mock
     private TaskInfoRepository taskInfoRepository;
-    @Mock
-    private UserInfoRepository userInfoRepository;
 
     @Mock
     private TaskInfoMapper taskInfoMapper;
+
+    @Mock
+    private KafkaProducerService kafkaProducerService;
 
     @InjectMocks
     private TaskInfoServiceImpl taskInfoService;
@@ -132,6 +130,9 @@ public class TaskInfoServiceImplTest {
             TaskInfoDTO taskInfoDTO = new TaskInfoDTO();
             when(taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo)).thenReturn(taskInfoDTO);
 
+            // Mocking KafkaProducerService
+            doNothing().when(kafkaProducerService).sendMessage(any(KafkaTopic.class), anyString());
+
             // Testing
             TaskInfoDTO result = taskInfoService.deleteTask(1);
             assertNotNull(result);
@@ -159,6 +160,9 @@ public class TaskInfoServiceImplTest {
 
             // Mocking taskInfoRepository
             when(taskInfoRepository.save(any(TaskInfo.class))).thenReturn(taskInfo);
+
+            // Mocking KafkaProducerService
+            doNothing().when(kafkaProducerService).sendMessage(any(KafkaTopic.class),anyString());
 
             // Mocking taskInfoMapper
             TaskInfoDTO taskInfoDTO = new TaskInfoDTO();

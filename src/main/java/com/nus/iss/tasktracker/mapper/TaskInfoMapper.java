@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.Named;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -16,7 +15,8 @@ public interface TaskInfoMapper {
     @Mapping(ignore = true, target = "createdDate")
     @Mapping(ignore = true, target = "modifiedDate")
     @Mapping(ignore = true, target = "deleteFlag")
-
+    @Mapping(target = "taskCategoryName", ignore = true)
+    @Mapping(target = "taskAssigneeName", ignore = true)
     TaskInfo taskInfoToEntity(TaskInfoDTO requestDTO);
 
     @Named("toTimestamp")

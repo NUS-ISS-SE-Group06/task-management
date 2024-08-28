@@ -3,30 +3,27 @@ package com.nus.iss.tasktracker.controller;
 import com.nus.iss.tasktracker.dto.Response;
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.service.TaskInfoService;
-import com.nus.iss.tasktracker.service.UserInfoService;
 import com.nus.iss.tasktracker.util.CustomResponseHandler;
+import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/taskinfo")
-@CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
 public class TaskInfoController {
     private final TaskInfoService taskInfoService;
-    private final UserInfoService userInfoService;
 
-    public TaskInfoController(TaskInfoService taskInfoService, UserInfoService userInfoService) {
+    public TaskInfoController(TaskInfoService taskInfoService) {
 
         this.taskInfoService = taskInfoService;
-        this.userInfoService = userInfoService;
     }
 
     @PostMapping("/create")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> createTask(@RequestBody TaskInfoDTO requestDTO) throws RuntimeException {
 
         TaskInfoDTO taskInfoDTO = null;
@@ -41,7 +38,7 @@ public class TaskInfoController {
 
         if (taskInfoDTO != null) {
             responseBody = taskInfoDTO;
-            successOrFailMessage = "Task Created Successfully.";
+            successOrFailMessage = String.format(TaskTrackerConstant.RECORD_CREATED_SUCCESSFULLY, TaskTrackerConstant.TASK_TRACKER_MODULE_TASK);
             return CustomResponseHandler.handleSuccessResponse(responseBody, status, successOrFailMessage);
         } else {
             return CustomResponseHandler.handleFailResponse(responseBody, status, successOrFailMessage);
@@ -50,7 +47,7 @@ public class TaskInfoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> deleteTask(@PathVariable int id) {
 
         TaskInfoDTO taskInfoDTO = null;
@@ -64,7 +61,7 @@ public class TaskInfoController {
         }
         if (taskInfoDTO != null) {
             responseBody = taskInfoDTO;
-            successOrFailMessage = "Task Deleted Successfully.";
+            successOrFailMessage = String.format(TaskTrackerConstant.RECORD_DELETED_SUCCESSFULLY,  TaskTrackerConstant.TASK_TRACKER_MODULE_TASK);
             return CustomResponseHandler.handleSuccessResponse(responseBody, status, successOrFailMessage);
         } else {
             return CustomResponseHandler.handleFailResponse(responseBody, status, successOrFailMessage);
@@ -72,14 +69,14 @@ public class TaskInfoController {
     }
 
     @GetMapping("tasklist")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public List<TaskInfoDTO> getAllTasks() {
 
         return taskInfoService.getAllActiveTasks();
     }
 
     @PutMapping("/update/{taskId}")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> updateTask(@PathVariable("taskId") int taskId, @RequestBody TaskInfoDTO requestDTO) {
 
         TaskInfoDTO taskInfoDTO = null;
@@ -94,7 +91,7 @@ public class TaskInfoController {
 
         if (taskInfoDTO != null) {
             responseBody = taskInfoDTO;
-            successOrFailMessage = "Task Updated Successfully.";
+            successOrFailMessage = String.format(TaskTrackerConstant.RECORD_UPDATED_SUCCESSFULLY,  TaskTrackerConstant.TASK_TRACKER_MODULE_TASK);
             return CustomResponseHandler.handleSuccessResponse(responseBody, status, successOrFailMessage);
         } else {
             return CustomResponseHandler.handleFailResponse(responseBody, status, successOrFailMessage);
@@ -102,14 +99,14 @@ public class TaskInfoController {
     }
 
     @GetMapping("tasklistdue")
-    @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public List<TaskInfoDTO> getAllTasksAssignedDue() {
         return taskInfoService.getAllActiveTasksAssignedDue();
     }
 
 
     @GetMapping("/totalreward/{userId}")
-        @CrossOrigin(origins = {"http://165.22.100.234:3000", "http://localhost:3000"})
+        @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
         public Integer getLeaderboard ( @PathVariable("userId") int userId){
             return taskInfoService.findTaskRewardPointsByGroupId(userId);
         }

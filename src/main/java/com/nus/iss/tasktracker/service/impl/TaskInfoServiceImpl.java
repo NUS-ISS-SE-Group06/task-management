@@ -1,6 +1,8 @@
 package com.nus.iss.tasktracker.service.impl;
+
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
+import com.nus.iss.tasktracker.model.KafkaTopic;
 import com.nus.iss.tasktracker.model.TaskInfo;
 import com.nus.iss.tasktracker.repository.TaskInfoRepository;
 import com.nus.iss.tasktracker.service.KafkaProducerService;
@@ -10,12 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
 import org.springframework.util.StringUtils;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-
-
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -97,7 +96,11 @@ public class TaskInfoServiceImpl implements TaskInfoService {
         taskInfoEntity.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
 
         // Save and map to dto
-        return taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
+        TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
+
+        //Emit TaskId
+        kafkaProducerService.sendMessage(KafkaTopic.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+        return result;
     }
 public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
 
@@ -166,8 +169,8 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
         }
 
         // Save and map to dto
-        return taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
-
+        TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
+        return result;
     }
 
 
@@ -207,7 +210,9 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
             taskInfoRepository.save(taskInfo);
 
             // Convert TaskInfo to TaskInfoDTO and return
-            return taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo);
+            TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo);
+            kafkaProducerService.sendMessage(KafkaTopic.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+            return  result;
         } else {
 
             // If the task does not exist, throw an exception or handle the error as needed

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @Override
-    @KafkaListener(topics = {"UserInfoCrated","UserInfoDeleted", "GroupInfoCreated", "GroupInfoDeleted"}, groupId = "task-processing-group")
+    @KafkaListener(topics = {"UserInfoCrated","UserInfoDeleted", "GroupInfoCreated", "GroupInfoDeleted", "TaskInfoDeleted", "TaskInfoCreated"}, groupId = "task-processing-group")
     public void listenToTaskProcessingEvents(String message) {
         System.out.println("Receive messages: " + message);
 

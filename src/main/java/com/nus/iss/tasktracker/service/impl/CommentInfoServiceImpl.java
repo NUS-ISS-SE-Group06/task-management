@@ -10,7 +10,6 @@ import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,55 +30,44 @@ public class CommentInfoServiceImpl implements CommentInfoService {
     @Override
     public TaskCommentDTO getCommentById(int commentId) {
         log.info("commentId: {}",commentId);
+        TaskCommentDTO taskCommentDTO = null;
         if(commentId>0){
             Optional<TaskComments> commentInfo = commentInfoRepository.findById(commentId);
-            TaskCommentDTO taskCommentDTO = null;
             if(commentInfo.isPresent()) {
                 taskCommentDTO = commentMapper.commentInfoToCommentDTO(commentInfo.get());
-            } else{
-                log.warn("CommentInfo Unavailable");
             }
-            log.info("taskCommentDTO: {}",taskCommentDTO);
-            return taskCommentDTO;
-        } else{
-            return null;
         }
+        return taskCommentDTO;
     }
 
     @Override
     public TaskCommentDTO saveComment(TaskCommentDTO taskCommentDTO) {
+        //String userName = TaskTrackerInterceptor.getLoggedInUserName();
+        String userId="1";
+        TaskCommentDTO taskCommentDTOResponse=null;
 
-        // FIXME - CREATED DATE NOT GETTING INSERTED: CHECK
         if((taskCommentDTO.getTaskId()>0) && (taskCommentDTO.getTaskComment().matches(TaskTrackerConstant.TASK_COMMENT_REGEX))){
-            String userName = TaskTrackerInterceptor.getLoggedInUserName();
-            taskCommentDTO.setCreatedBy(userName);
-            log.info("commentDTO: {}", taskCommentDTO);
+            taskCommentDTO.setCreatedBy(userId);
             TaskComments taskComments = commentMapper.commentDTOToCommentInfo(taskCommentDTO);
-            log.info("commentInfo: {}", taskComments);
             TaskComments taskCommentsResponse = commentInfoRepository.save(taskComments);
-            log.info("commentInfoResponse: {}", taskCommentsResponse);
-            TaskCommentDTO taskCommentDTOResponse = commentMapper.commentInfoToCommentDTO(taskCommentsResponse);
-            log.info("commentDTOResponse: {}", taskCommentDTOResponse);
-            return taskCommentDTOResponse;
+            taskCommentDTOResponse = commentMapper.commentInfoToCommentDTO(taskCommentsResponse);
         } else{
             throw new RuntimeException(TaskTrackerConstant.TASK_COMMENT_INVALID_INPUT);
         }
-
+        log.info("taskCommentDTOResponse {}", taskCommentDTOResponse);
+        return taskCommentDTOResponse;
     }
 
     @Override
     public List<TaskCommentDTO> getAllCommentsForTask(int taskId) {
+        List<TaskCommentDTO> taskCommentDTOList = new ArrayList<TaskCommentDTO>();
         if(taskId>0){
             List<TaskComments> taskCommentsList = commentInfoRepository.findByTaskId(taskId);
-            List<TaskCommentDTO> taskCommentDTOList = new ArrayList<TaskCommentDTO>();
             for(TaskComments taskComments : taskCommentsList){
                 TaskCommentDTO output= commentMapper.commentInfoToCommentDTO(taskComments);
                 taskCommentDTOList.add(output);
             }
-            log.info("taskCommentDTOList {}", taskCommentDTOList);
-            return taskCommentDTOList;
-        } else {
-            return null;
         }
+        return taskCommentDTOList;
     }
 }
