@@ -1,41 +1,25 @@
-
-name: main_pull_request
-
+name: dev_test_build
 on:
-  # This workflow is automatically triggered upon the approval of a pull request,
-  # with a condition checking for changes in the source files or the pom.xml file in the development branch.
-  pull_request:
-    types:
-      - closed
+  # This workflow is automatically triggered upon a push request to the development branch. 
+  # The test-build : indicating whether your code commits are not breaking during compilation.
+  # The unit-test : indicating whether your funtionalities are not breaking.
+  # The Sonar : indicating whether your code commits are not violating code scan rules.
+  push:
+    paths:
+      - 'src/**'
+      - 'pom.xml'
 
 jobs:
-  code_merge:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo The PR was merged
-  branch_synch:
-    if: github.ref == 'refs/heads/dev'  # execution when code merge : main -> dev
-    needs: code_merge
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo The PR was branch synchronization code merged from main -> dev. No further step.
-  main_build:
-    if: github.ref == 'refs/heads/main'  # execution when code merge: dev -> main
-    needs: code_merge
+  test_build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source Codes
         uses: actions/checkout@v4
-        with:
-          ref: main
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '21'
+          distribution: 'temurin'
           cache: maven
       - name: Cache Maven Packages
         uses: actions/cache@v4
@@ -44,12 +28,11 @@ jobs:
             ~/.m2
             target
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2  
+          restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn -B clean package
   unit_test:
-    if: github.ref == 'refs/heads/main'  # execution when code merge: dev -> main
-    needs: main_build
+    needs: test_build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source Codes
@@ -57,8 +40,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '21'
+          distribution: 'temurin'
           cache: maven
       - name: Cache Maven Packages
         uses: actions/cache@v4
@@ -67,13 +50,12 @@ jobs:
             ~/.m2
             target
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2  
+          restore-keys: ${{ runner.os }}-m2
       - name: Run Test with Maven
         run: mvn -B test
       - name: List Contents of target Directory
         run: ls -R target
   code_scan:
-    if: github.ref == 'refs/heads/main'  # execution when code merge: dev -> main
     needs: unit_test
     runs-on: ubuntu-latest
     steps:
@@ -82,8 +64,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '21'
+          distribution: 'temurin'
           cache: maven
       - name: Cache Maven Packages
         uses: actions/cache@v4
@@ -92,7 +74,7 @@ jobs:
             ~/.m2
             target
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2  
+          restore-keys: ${{ runner.os }}-m2
       - name: List Contents of target Directory
         run: ls -R target
       - name: Cache SonarCloud Packages
@@ -106,5 +88,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-       
+        
+
+    
         
