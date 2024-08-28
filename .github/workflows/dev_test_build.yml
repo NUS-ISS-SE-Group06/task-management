@@ -5,6 +5,8 @@ on:
   # The unit-test : indicating whether your funtionalities are not breaking.
   # The Sonar : indicating whether your code commits are not violating code scan rules.
   push:
+    branches:
+      - main
     paths:
       - 'src/**'
       - 'pom.xml'
