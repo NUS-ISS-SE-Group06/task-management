@@ -1,0 +1,477 @@
+{
+	"info": {
+		"_postman_id": "45876ad2-373a-4066-abce-65b3273102ad",
+		"name": "NUS_TaskTracker_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14258588"
+	},
+	"item": [
+		{
+			"name": "USER_REGISTRATION",
+			"item": [
+				{
+					"name": "ADMIN_REGISTRATION",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Name1\",\n    \"email\": \"name1@gmail.com\",\n    \"groupName\": \"Name1 Group\",\n    \"username\": \"Name9\",\n    \"password\": \"Name2024\",\n    \"userRole\": \"ROLE_ADMIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "USER_REGISTRATION",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"normaluser\",\n    \"email\": \"nuser@gmail.com\",\n    \"groupName\": \"\",\n    \"userRole\": \"ROLE_USER\",\n    \"username\": \"normaluser1\",\n    \"password\": \"normaluser1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GROUP",
+			"item": [
+				{
+					"name": "CREATE_GROUP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupName\": \"Group Test\",\n    \"groupDescription\": \"Description for Group Test\",\n    \"createdBy\": \"SiBa\",\n    \"modifiedBy\": \"SiBa\",\n    \"deleteFlag\": \"FALSE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/group-info/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"group-info",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_GROUP_INFO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8688/api/group-info/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"group-info",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LOGIN",
+			"item": [
+				{
+					"name": "LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user2\",\n    \"password\": \"password1\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/userinfo/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"userinfo",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE_PASSWORD",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user1\",\n    \"oldPassword\": \"password1\",\n    \"newPassword\": \"password2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TASK_MANAGEMENT",
+			"item": [
+				{
+					"name": "http://localhost:8688/api/taskinfo/delete/7",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX0FETUlOIiwianRpIjoiNmVlNzQxNzgtYWZjMC00ZDlhLWE2ZDEtYzczNWEyOWM3ZDQ0IiwiaWF0IjoxNzExNzY4Njk3LCJleHAiOjE3MTE3NjkyOTd9.2Nqzoeq6MJLa3869g20MtyTBCyK51-zL3EHUs2kLgvn2NwB3s7_ucICfXC8fKyh2kArxas46TFGpfA0zuvuAFw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8688/api/taskinfo/delete/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"taskinfo",
+								"delete",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8688/api/taskinfo/tasklist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX0FETUlOIiwianRpIjoiZjcyOTY0YmEtNDA4MC00ODAwLWEzODctYjVjMmNkMDhkODQwIiwiaWF0IjoxNzExNzY3NzA4LCJleHAiOjE3MTE3NjgzMDh9.6Oh43CrD_8SgdizglQCQ0w-KpGT5PCRDaPFOVaig8s5UmAQwhNqy-qPmd67JP4KiODnq5b_yg1u314PyFcpRSQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/taskinfo/tasklist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"taskinfo",
+								"tasklist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8688/api/taskinfo/update/14",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX0FETUlOIiwianRpIjoiMDdjOTM3YTctMGM3Yi00N2Q2LTk5OGEtYzIwYTcxMjU1NmVjIiwiaWF0IjoxNzExNzY4OTA1LCJleHAiOjE3MTE3Njk1MDV9.tYL3zDgQ-MzwlEZxz3syt46QBrRCz7gbxELcQS-gkqv0TqeAQUau2YlIbVyonk8B6VrmNLja4W-lyaDQBfRaYw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"taskName\":\"test07-test\",\n    \"taskDescription\":\"test07-test\",\n    \"taskAssignee\":\"2\",\n    \"taskDueDate\":\"2024-04-01T12:00:00\",\n    \"taskRewardPoint\":0,\n    \"taskPriority\":\"2\",\n    \"taskCategoryId\":\"2\",\n    \"taskStatus\":\"Progress\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/taskinfo/update/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"taskinfo",
+								"update",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8688/api/taskinfo/create",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "{eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMSIsImp0aSI6ImY0MTc2Y2Q2LTc0Y2QtNGYxMy1hOTgyLTFiODdlZTFhNGU4NCIsImlhdCI6MTcxMTU1MDM1NiwiZXhwIjoxNzExNTUwOTU2fQ.6D8OE_-SN-OlmX8fJcmrDICSih9maIZvsFS9zzEW-hdbX9AJCmAl5Rt_NfcLCjD78QvVefF_yxAtF39vBI0mWg}",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX0FETUlOIiwianRpIjoiZmVhYWNhYmUtMjhiMC00NDY4LTkzYzAtZmMyNWIxMDc1ZTRkIiwiaWF0IjoxNzExNzYzNDU4LCJleHAiOjE3MTE3NjQwNTh9.D1JG8SEacO62FBHp4VxnLZ-e8uDVlWBaAyPffiIqNTwSb6Cqd2GxskkDlQbtvxh8zCjCZVWWEwwqFugzUaWLuA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"taskName\":\"test again11\",\n    \"taskDescription\":\"test again11\",\n    \"taskAssignee\":\"1\",\n    \"taskDueDate\":\"2024-03-30T22:00:00\",\n    \"taskRewardPoint\":0,\n    \"taskPriority\":\"2\",\n    \"taskCategoryId\":\"2\",\n    \"taskStatus\":\"Pending\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8688/api/taskinfo/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"taskinfo",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8688/api/taskinfo/tasklistdue",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMSIsImF1dGgiOiJST0xFX0FETUlOIiwianRpIjoiZTQ2ZDFjOTgtNzU2NC00MGMyLWFmNTMtYmIwOTNjMmNjM2I2IiwiaWF0IjoxNzExNzY3ODMyLCJleHAiOjE3MTE3Njg0MzJ9.2jxHsHDdjUgRFI2LLVXhsPIErFB5W5qA2cqqWH86nOQ_I_nUTbyLcjSpX9S9d-Yf1iCIDdbaAVfo89S6pX-qcA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8688/api/taskinfo/tasklistdue",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8688",
+							"path": [
+								"api",
+								"taskinfo",
+								"tasklistdue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ZZ_VALIDATE_TOKEN",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJncnB1c2VyMSIsImF1dGgiOiJST0xFX1VTRVIiLCJqdGkiOiJiY2QwMmM1OC1hNDg1LTQ4ZTktYjVmYy0xMmMwZTU2YTlhZTIiLCJpYXQiOjE3MTEyOTA0NjUsImV4cCI6MTcxMTI5MTA2NX0.YW-6AHvxIK-5ERvvzaSdp4HX26-cf_4ZmGblXJiIYe6I9fWlAK2dMg8AM7QzjZ9GMGmXGfb9S1YFOufU72S7eA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8688/api/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8688",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "USER_LIST",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUQVNLX1RSQUNLRVIiLCJzdWIiOiJ1c2VyMiIsImF1dGgiOiJST0xFX0FETUlOIiwianRpIjoiNDNjMjNlMGItNWFkMS00MDUyLWE1ODAtNTgwNjczNjcwZjVjIiwiaWF0IjoxNzExMzg2MzE2LCJleHAiOjE3MTEzODY5MTZ9.Xm7I2BpzDF9p4o3tjWkV2uJwXMqyfOyweLICBZo_WIrDEMQKR6AfOSnDHKVvJInmSEA5GFq49x5gjlFhj_1Clg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8688/api/userlist",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8688",
+					"path": [
+						"api",
+						"userlist"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

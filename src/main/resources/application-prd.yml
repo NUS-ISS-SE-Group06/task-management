@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:/app/db/tasktracker.db
+    driver-class-name: org.sqlite.JDBC
+    username:
+    password:
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  devtools:
+    restart:
+      enabled: true
+
+
+task-tracker:
+  jwt:
+    secret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+    expirationTimeInMins: 10
+
+logging:
+  config: classpath:log4j2-prd.xml
+
