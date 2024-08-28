@@ -2,12 +2,12 @@ package com.nus.iss.tasktracker.service.impl;
 
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
-import com.nus.iss.tasktracker.model.KafkaTopic;
 import com.nus.iss.tasktracker.model.TaskInfo;
 import com.nus.iss.tasktracker.repository.TaskInfoRepository;
 import com.nus.iss.tasktracker.service.KafkaProducerService;
 import com.nus.iss.tasktracker.service.TaskInfoService;
 import com.nus.iss.tasktracker.util.TaskTrackerConstant;
+import com.nus.iss.tasktracker.util.KafkaTopics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +103,7 @@ public class TaskInfoServiceImpl implements TaskInfoService {
 
 
         //Emit TaskId
-        kafkaProducerService.sendMessage(KafkaTopic.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+        kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
 
         return result;
     }
@@ -216,7 +216,7 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
 
             // Convert TaskInfo to TaskInfoDTO and return
             TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo);
-            kafkaProducerService.sendMessage(KafkaTopic.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+            kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_DELETED, String.valueOf(result.getTaskId()));
             return  result;
         } else {
 

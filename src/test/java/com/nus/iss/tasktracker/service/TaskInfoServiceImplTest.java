@@ -3,7 +3,6 @@ package com.nus.iss.tasktracker.service;
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
 import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
-import com.nus.iss.tasktracker.model.KafkaTopic;
 import com.nus.iss.tasktracker.model.TaskInfo;
 import com.nus.iss.tasktracker.repository.TaskInfoRepository;
 import com.nus.iss.tasktracker.service.impl.TaskInfoServiceImpl;
@@ -131,7 +130,7 @@ public class TaskInfoServiceImplTest {
             when(taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo)).thenReturn(taskInfoDTO);
 
             // Mocking KafkaProducerService
-            doNothing().when(kafkaProducerService).sendMessage(any(KafkaTopic.class), anyString());
+            doNothing().when(kafkaProducerService).sendMessage(anyString(), anyString());
 
             // Testing
             TaskInfoDTO result = taskInfoService.deleteTask(1);
@@ -162,7 +161,7 @@ public class TaskInfoServiceImplTest {
             when(taskInfoRepository.save(any(TaskInfo.class))).thenReturn(taskInfo);
 
             // Mocking KafkaProducerService
-            doNothing().when(kafkaProducerService).sendMessage(any(KafkaTopic.class),anyString());
+            doNothing().when(kafkaProducerService).sendMessage(anyString(),anyString());
 
             // Mocking taskInfoMapper
             TaskInfoDTO taskInfoDTO = new TaskInfoDTO();

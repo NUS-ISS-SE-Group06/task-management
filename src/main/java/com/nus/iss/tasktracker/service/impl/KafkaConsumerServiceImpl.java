@@ -1,6 +1,7 @@
 package com.nus.iss.tasktracker.service.impl;
 
 import com.nus.iss.tasktracker.service.KafkaConsumerService;
+import com.nus.iss.tasktracker.util.KafkaTopics;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -9,7 +10,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @Override
-    @KafkaListener(topics = {"UserInfoCrated","UserInfoDeleted", "GroupInfoCreated", "GroupInfoDeleted"}, groupId = "task-processing-group")
+    @KafkaListener(topics =  {KafkaTopics.USER_INFO_CREATED,KafkaTopics.USER_INFO_DELETED, KafkaTopics.GROUP_INFO_CREATED, KafkaTopics.GROUP_INFO_DELETED}, groupId = KafkaTopics.TASK_PROCESSING_GROUP)
     public void listenToTaskProcessingEvents( ConsumerRecord<String, String> record) {
         String topic = record.topic();
         String message = record.value();
@@ -17,16 +18,16 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
         System.out.println("Receive messages: " + message);
 
         switch (topic) {
-            case "UserInfoCreated":
+            case KafkaTopics.USER_INFO_CREATED:
                 handleUserInfoCreated(message);
                 break;
-            case "UserInfoDeleted":
+            case KafkaTopics.USER_INFO_DELETED:
                 handleUserInfoDeleted(message);
                 break;
-            case "GroupInfoCreated":
+            case KafkaTopics.GROUP_INFO_CREATED:
                 handleGroupInfoCreated(message);
                 break;
-            case "GroupInfoDeleted":
+            case KafkaTopics.GROUP_INFO_DELETED:
                 handleGroupInfoDeleted(message);
                 break;
         }
