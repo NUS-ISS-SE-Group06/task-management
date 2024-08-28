@@ -9,7 +9,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @Override
-    @KafkaListener(topics = {"UserInfoCrated","UserInfoDeleted", "GroupInfoCreated", "GroupInfoDeleted", "TaskInfoDeleted", "TaskInfoCreated"}, groupId = "task-processing-group")
+    @KafkaListener(topics = {"UserInfoCrated","UserInfoDeleted", "GroupInfoCreated", "GroupInfoDeleted"}, groupId = "task-processing-group")
     public void listenToTaskProcessingEvents( ConsumerRecord<String, String> record) {
         String topic = record.topic();
         String message = record.value();
