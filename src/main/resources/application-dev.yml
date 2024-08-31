@@ -1,6 +1,5 @@
 spring:
   datasource:
-    #url: jdbc:sqlite:/Users/onggowahyudi/nus/task-management-service/resources/db/tasktracker.db
     url: jdbc:mysql://localhost:3306/taskmanagement
     username: root
     password: root

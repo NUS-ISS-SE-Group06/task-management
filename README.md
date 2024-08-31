@@ -41,9 +41,14 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    
    # Access the MySql container
    docker exec -it mysql-container mysql -u root -p
-   #USE <databasename>
-   #SHOW DATABASES
-   #SHOW TABLES
+   
+   
+   
+   #example command:
+   #mysql> USE <databasename>
+   #mysql> SHOW DATABASES
+   #mysql> SHOW TABLES
+   
    ```
 2. 
 ### Installation
