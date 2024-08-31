@@ -40,12 +40,14 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    docker ps
    
    # Copy SQL files to the Docker container
-   docker cp /<path-to-source-file>/resources/db/create_database.sql mysql-container:/create_database.sql
-   docker cp /<path-to-source-file>/resources/db/insert_user_group_category_records.sql mysql-container:/insert_user_group_category_records.sql
+   # The pre-existing SQL scripts can be found in `db` folder within `TaskManagement`
+
+   docker cp /<path-to-source-file>/create_database.sql mysql-container:/create_database.sql
+   docker cp /<path-to-source-file>/insert_user_group_category_records.sql mysql-container:/insert_user_group_category_records.sql
   
    # Create the database and tables
-   docker exec -i mysql-container mysql -u root -proot < ./create_database.sql   
-   docker exec -i mysql-container mysql -u root -proot < ./creatinsert_user_group_category_recordse_database.sql   
+   docker exec -i mysql-container mysql -u root -p<enter-password> < ./create_database.sql   
+   docker exec -i mysql-container mysql -u root -p<enter-password> < ./creatinsert_user_group_category_recordse_database.sql   
    
     # Access the MySQL Monitor
    docker exec -it mysql-container mysql -u root -p
