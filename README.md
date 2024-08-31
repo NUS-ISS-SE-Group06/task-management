@@ -19,40 +19,63 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
 - **Java 11** or later
 - **Maven** for building the project
 - **Spring Boot** for application framework
-- **SQLite** for local development
+- **MySql** for local development
 - **Amazon Aurora DB** for production (optional)
 - **Kafka** for event messaging (optional but recommended)
 
+### Installation MySql Docker
+
+   ```bash
+   # Pull the latest mySql image
+   docker pull mysql:latest
+   
+   # Run a container based on this image
+   docker run --name mysql-container \
+    -e MYSQL_ROOT_PASSWORD=<set-password-here> \
+    -p 3306:3306 \
+    -v /Users/<user-profile>/nus/db:/varlib/mysql \
+    -d mysql:latest 
+    
+   # To check MySql container is running
+   docker ps
+   
+   # Access the MySql container
+   docker exec -it mysql-container mysql -u root -p
+   #USE <databasename>
+   #SHOW DATABASES
+   #SHOW TABLES
+   ```
+2. 
 ### Installation
 
 1. **Clone the Repository:**
 
-   \`\`\`bash
+   ```bash
    git clone https://github.com/your-username/task-tracker-api.git
    cd task-tracker-api
-   \`\`\`
+   ```
 
 2. **Build the Project:**
 
    Use Maven to build the project:
 
-   \`\`\`bash
+   ```bash
    mvn clean install
-   \`\`\`
+   ```
 
 3. **Run the Application:**
 
    Start the Spring Boot application:
 
-   \`\`\`bash
+   ```bash
    mvn spring-boot:run
-   \`\`\`
+   ```
 
    Alternatively, you can run the packaged JAR file:
 
-   \`\`\`bash
+   ```bash
    java -jar target/task-tracker-api-0.0.1-SNAPSHOT.jar
-   \`\`\`
+   ```
 
 ### Configuration 
 

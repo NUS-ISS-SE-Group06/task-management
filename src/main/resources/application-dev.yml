@@ -1,11 +1,12 @@
 spring:
   datasource:
-    url: jdbc:sqlite:/Users/onggowahyudi/nus/task-management-service/resources/db/tasktracker.db
-    driver-class-name: org.sqlite.JDBC
-    username:
-    password:
+    #url: jdbc:sqlite:/Users/onggowahyudi/nus/task-management-service/resources/db/tasktracker.db
+    url: jdbc:mysql://localhost:3306/taskmanagement
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    #database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
