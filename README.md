@@ -26,28 +26,49 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
 ### Installation MySql Docker
 
    ```bash
-   # Pull the latest mySql image
+   # Pull the latest MySQL image
    docker pull mysql:latest
    
    # Run a container based on this image
    docker run --name mysql-container \
     -e MYSQL_ROOT_PASSWORD=<set-password-here> \
     -p 3306:3306 \
-    -v /Users/<user-profile>/nus/db:/varlib/mysql \
+    -v /Users/<user-profile>/nus/db:/varlib/mysql \ 
     -d mysql:latest 
     
-   # To check MySql container is running
+   # To check MySQL container is running
    docker ps
    
-   # Access the MySql container
+   # Copy SQL files to the Docker container
+   docker cp /<path-to-source-file>/resources/db/create_database.sql mysql-container:/create_database.sql
+   docker cp /<path-to-source-file>/resources/db/insert_user_group_category_records.sql mysql-container:/insert_user_group_category_records.sql
+  
+   # Create the database and tables
+   docker exec -i mysql-container mysql -u root -proot < ./create_database.sql   
+   docker exec -i mysql-container mysql -u root -proot < ./creatinsert_user_group_category_recordse_database.sql   
+   
+    # Access the MySQL Monitor
    docker exec -it mysql-container mysql -u root -p
    
+   #example MySQL command:
+   #mysql> USE <database-name>;
+   #mysql> SHOW DATABASES;
+   #mysql> SHOW TABLES;
+   #mysql> SHOW PROCESSLIST;
+   #mysql> DESCRIBE <table>;
+   #mysql> SELECT VERSION();
+   
+   # Backup a Database
+   docker exec mysql-container mysql -u root -p<password> my_database > /path/to/backup/my_database_backup.sql
+   
+   # Restore a Database from a Backup
+   docker exec -i mysql-container mysql -u root -p<password> my_database < /path/to/backup/my_database_backup.sql
+
+   # Exiting the MySQL CLI
+   #mysql> EXIT;
    
    
-   #example command:
-   #mysql> USE <databasename>
-   #mysql> SHOW DATABASES
-   #mysql> SHOW TABLES
+   
    
    ```
 2. 
