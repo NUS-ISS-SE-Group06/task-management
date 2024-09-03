@@ -10,6 +10,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_SHOW_SQL=true
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
+      - SPRING_KAFKA_CONSUMER_GROUP=task-management-group
     volumes:
       - /Users/onggowahyudi/nus/temp2/logs:/app/logs
       - /Users/onggowahyudi/nus/temp2/config/application.yml:/app/config/application.yml
@@ -18,4 +20,4 @@ services:
 
 networks:
   task-tracker-network:
-    driver: bridge
+    external: true
