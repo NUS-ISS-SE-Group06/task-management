@@ -1,0 +1,19 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: taskmanagement
+    ports:
+      - "3306:3306"
+    volumes:
+      - /Users/onggowahyudi/nus/db//mysql:/var/lib/mysql
+    networks:
+      - task-tracker-network
+
+networks:
+  task-tracker-network:
+    driver: bridge
+
+

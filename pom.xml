@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nus.iss</groupId>
-	<artifactId>task-tracker-api</artifactId>
+	<artifactId>task-management-api</artifactId>
 	<version>1.0.0</version>
-	<name>task-tracker-api</name>
+	<name>task-management-api</name>
 	<description>Task Tracker project helps users to assign &amp; complete tasks. With this project users can easily track the task progress let it be personal or professional work.</description>
 	<packaging>war</packaging>
 	<properties>
@@ -153,18 +153,18 @@
 			<version>${log4j.version}</version>
 		</dependency>
 
-
+		<!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
+			<version>1.6.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
-			<version>${mapstruct.version}</version>
-			<scope>provided</scope>
+			<version>1.6.0</version>
 		</dependency>
 
 		<dependency>

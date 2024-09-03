@@ -29,25 +29,18 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    # Pull the latest MySQL image
    docker pull mysql:latest
    
-   # Run a container based on this image
-   docker run --name mysql-container \
-    -e MYSQL_ROOT_PASSWORD=<set-password-here> \
-    -p 3306:3306 \
-    -v /Users/<user-profile>/nus/db:/varlib/mysql \ 
-    -d mysql:latest 
-    
+    # Create network for task-tracker
+   docker network create --driver bridge task-tracker-network
+   
+   # Run a mysql container based on this image
+   docker compose -f docker-compose-mysql.yml backup
+   
    # To check MySQL container is running
    docker ps
    
-   # Copy SQL files to the Docker container
-   # The pre-existing SQL scripts can be found in `db` folder within `TaskManagement`
-
-   docker cp /<path-to-source-file>/create_database.sql mysql-container:/create_database.sql
-   docker cp /<path-to-source-file>/insert_user_group_category_records.sql mysql-container:/insert_user_group_category_records.sql
-  
    # Create the database and tables
-   docker exec -i mysql-container mysql -u root -p<enter-password> < ./create_database.sql   
-   docker exec -i mysql-container mysql -u root -p<enter-password> < ./creatinsert_user_group_category_recordse_database.sql   
+   docker exec -i mysql mysql -u root -p<enter-password> < <path-to-file>/create_database.sql   
+   docker exec -i mysql mysql -u root -p<enter-password> < <path-to-file>/insert_user_group_category_records.sql   
    
     # Access the MySQL Monitor
    docker exec -it mysql-container mysql -u root -p
@@ -61,10 +54,10 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    #mysql> SELECT VERSION();
    
    # Backup a Database
-   docker exec mysql-container mysql -u root -p<password> my_database > /path/to/backup/my_database_backup.sql
+   docker exec mysql mysql -u root -p<password> my_database > /path/to/backup/my_database_backup.sql
    
    # Restore a Database from a Backup
-   docker exec -i mysql-container mysql -u root -p<password> my_database < /path/to/backup/my_database_backup.sql
+   docker exec -i mysql mysql -u root -p<password> my_database < /path/to/backup/my_database_backup.sql
 
    # Exiting the MySQL CLI
    #mysql> EXIT;
@@ -79,8 +72,8 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/your-username/task-tracker-api.git
-   cd task-tracker-api
+   git https://github.com/NUS-ISS-SE-Group06/task-management.git
+   cd task-management
    ```
 
 2. **Build the Project:**
@@ -104,7 +97,17 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    ```bash
    java -jar target/task-tracker-api-0.0.1-SNAPSHOT.jar
    ```
+3. **🐳 Alternatively, build the Docker image:**
 
+   ```bash
+   docker build -t task-management .
+   ```
+
+3. **🐳 Run the Docker image:**
+   ```bash
+   docker compose up
+   ```
+   
 ### Configuration 
 
 The application can be configured via the `application.yml` or `application.properties` file located in the `src/main/resources` directory. Key configurations include:

@@ -1,0 +1,21 @@
+services:
+  task-management:
+    image: task-management:latest
+    ports:
+      - "8688:8688"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/taskmanagement
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+    volumes:
+      - /Users/onggowahyudi/nus/temp2/logs:/app/logs
+      - /Users/onggowahyudi/nus/temp2/config/application.yml:/app/config/application.yml
+    networks:
+      - task-tracker-network
+
+networks:
+  task-tracker-network:
+    driver: bridge

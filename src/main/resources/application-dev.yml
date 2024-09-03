@@ -27,8 +27,6 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 
-
-
 task-tracker:
   jwt:
     secret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890

@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/taskinfo")
-@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+//@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
 public class TaskInfoController {
     private final TaskInfoService taskInfoService;
 
@@ -23,7 +23,7 @@ public class TaskInfoController {
     }
 
     @PostMapping("/create")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> createTask(@RequestBody TaskInfoDTO requestDTO) throws RuntimeException {
 
         TaskInfoDTO taskInfoDTO = null;
@@ -47,7 +47,7 @@ public class TaskInfoController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> deleteTask(@PathVariable int id) {
 
         TaskInfoDTO taskInfoDTO = null;
@@ -69,14 +69,14 @@ public class TaskInfoController {
     }
 
     @GetMapping("tasklist")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+   //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public List<TaskInfoDTO> getAllTasks() {
 
         return taskInfoService.getAllActiveTasks();
     }
 
     @PutMapping("/update/{taskId}")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> updateTask(@PathVariable("taskId") int taskId, @RequestBody TaskInfoDTO requestDTO) {
 
         TaskInfoDTO taskInfoDTO = null;
@@ -99,17 +99,17 @@ public class TaskInfoController {
     }
 
     @GetMapping("tasklistdue")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL,  TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public List<TaskInfoDTO> getAllTasksAssignedDue() {
         return taskInfoService.getAllActiveTasksAssignedDue();
     }
 
 
     @GetMapping("/totalreward/{userId}")
-        @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
-        public Integer getLeaderboard ( @PathVariable("userId") int userId){
-            return taskInfoService.findTaskRewardPointsByGroupId(userId);
-        }
-
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    public Integer getLeaderboard ( @PathVariable("userId") int userId){
+        return taskInfoService.findTaskRewardPointsByGroupId(userId);
     }
+
+}
 

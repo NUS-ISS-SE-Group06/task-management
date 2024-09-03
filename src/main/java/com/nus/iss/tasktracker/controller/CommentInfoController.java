@@ -4,7 +4,7 @@ import com.nus.iss.tasktracker.dto.TaskCommentDTO;
 import com.nus.iss.tasktracker.dto.Response;
 import com.nus.iss.tasktracker.service.CommentInfoService;
 import com.nus.iss.tasktracker.util.CustomResponseHandler;
-import com.nus.iss.tasktracker.util.TaskTrackerConstant;
+//import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class CommentInfoController {
     }
 
     @GetMapping("/{id}")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> getCommentById(@PathVariable int id) throws RuntimeException{
         Object responseBody=null;
         HttpStatus status = HttpStatus.OK;
@@ -46,7 +46,7 @@ public class CommentInfoController {
 
 
     @PostMapping("/create")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public ResponseEntity<Response> createComment(@RequestBody TaskCommentDTO requestDTO) throws RuntimeException {
         TaskCommentDTO taskCommentDTO = commentInfoService.saveComment(requestDTO);
         Object responseBody=null;
@@ -64,7 +64,7 @@ public class CommentInfoController {
     }
 
     @GetMapping("/comment-list/{id}")
-    @CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
+    //@CrossOrigin(origins = {TaskTrackerConstant.CROSS_ORIGIN_URL, TaskTrackerConstant.CROSS_ORIGIN_LOCALHOST_URL})
     public List<TaskCommentDTO> getAllCommentsForTask(@PathVariable int id){
         return commentInfoService.getAllCommentsForTask(id);
     }

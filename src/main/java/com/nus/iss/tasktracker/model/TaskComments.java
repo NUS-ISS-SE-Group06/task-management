@@ -16,13 +16,9 @@ public class TaskComments {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer taskCommentId;
-
     private Integer taskId;
-
     private String taskComment;
-
     private String createdBy;
-
     private Timestamp createdDate;
 
     @Override

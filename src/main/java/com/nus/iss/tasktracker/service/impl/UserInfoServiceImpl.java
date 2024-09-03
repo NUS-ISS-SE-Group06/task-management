@@ -4,7 +4,7 @@ import com.nus.iss.tasktracker.dto.UserDTO;
 import com.nus.iss.tasktracker.mapper.UserMapper;
 import com.nus.iss.tasktracker.model.UserInfo;
 import com.nus.iss.tasktracker.repository.UserInfoRepository;
-import com.nus.iss.tasktracker.service.KafkaProducerService;
+//import com.nus.iss.tasktracker.service.KafkaProducerService;
 import com.nus.iss.tasktracker.service.UserInfoService;
 import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import lombok.extern.slf4j.Slf4j;

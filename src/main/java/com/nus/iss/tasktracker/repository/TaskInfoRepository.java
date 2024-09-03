@@ -1,6 +1,6 @@
 package com.nus.iss.tasktracker.repository;
 
-import com.nus.iss.tasktracker.dto.TaskInfoDTO;
+//import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.model.TaskInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
