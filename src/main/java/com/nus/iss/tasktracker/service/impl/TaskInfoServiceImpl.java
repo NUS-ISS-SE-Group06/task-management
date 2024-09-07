@@ -329,7 +329,15 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
 
     }
 
+    @Override
+    public void releaseActiveTaskAssignedToUser(String userId){
+        List<TaskInfo> tasks=taskInfoRepository.findByTaskAssigneeAndTaskStatus(userId,"Pending");
 
+        for (TaskInfo task : tasks){
+            task.setTaskAssignee(null);
+            taskInfoRepository.save(task);
+        }
+    }
 
 }
 

@@ -15,4 +15,8 @@ public interface TaskInfoService {
     List<TaskInfoDTO> getAllActiveTasksAssignedDue();
 
     public Integer findTaskRewardPointsByGroupId(Integer userId);
+
+    void releaseActiveTaskAssignedToUser(String userId);
+
+
 }
