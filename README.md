@@ -38,12 +38,12 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    # To check MySQL container is running
    docker ps
    
-   # Create the database and tables
+   # Create the database and tables, navigate to the resources/db folder and run the following commands with replacing the placeholders.
    docker exec -i mysql mysql -u root -p<enter-password> < <path-to-file>/create_database.sql   
-   docker exec -i mysql mysql -u root -p<enter-password> < <path-to-file>/insert_user_group_category_records.sql   
+   docker exec -i mysql mysql -u root -p<enter-password> <database name> < <path-to-file>/insert_user_group_category_records.sql   
    
     # Access the MySQL Monitor
-   docker exec -it mysql-container mysql -u root -p
+   docker exec -it <container-name> mysql -u root -p
    
    #example MySQL command:
    #mysql> USE <database-name>;

@@ -13,8 +13,8 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SPRING_KAFKA_CONSUMER_GROUP=task-management-group
     volumes:
-      - /Users/onggowahyudi/nus/temp2/logs:/app/logs
-      - /Users/onggowahyudi/nus/temp2/config/application.yml:/app/config/application.yml
+      - /Users/brittaalex/Documents/workstation/mtech-worskpace/nus/temp2/logs:/app/logs
+      - /Users/brittaalex/Documents/workstation/mtech-worskpace/nus/temp2/config/application.yml:/app/config/application.yml
     networks:
       - task-tracker-network
 
