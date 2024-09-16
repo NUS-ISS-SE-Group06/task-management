@@ -30,7 +30,7 @@ public interface TaskInfoRepository extends  JpaRepository<TaskInfo, Integer> {
 
     Optional<TaskInfo> findByDeleteFlagAndTaskId(String deleteFlag, int taskId );
 
-    List<TaskInfo> findByTaskAssigneeAndTaskStatus(String userId, String taskStatus);
+    List<TaskInfo> findByTaskAssigneeAndTaskStatus(int userId, String taskStatus);
 }
 
 

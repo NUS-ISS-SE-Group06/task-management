@@ -16,7 +16,7 @@ public interface TaskInfoService {
 
     public Integer findTaskRewardPointsByGroupId(Integer userId);
 
-    void releaseActiveTaskAssignedToUser(String userId);
+    void releaseActiveTaskAssignedToUser(int userId);
 
 
 }
