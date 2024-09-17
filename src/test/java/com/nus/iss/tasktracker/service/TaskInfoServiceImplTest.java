@@ -1,6 +1,7 @@
 package com.nus.iss.tasktracker.service;
 
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
+import com.nus.iss.tasktracker.dto.UserDTO;
 import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
 import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
 import com.nus.iss.tasktracker.model.TaskInfo;
@@ -40,10 +41,13 @@ public class TaskInfoServiceImplTest {
     @Test
     public void testGetAllActiveTasks_User_Success() {
 
-        try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserName).thenReturn("admin");
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserRole).thenReturn(TaskTrackerConstant.REGISTRATION_ROLE_USER);
+        UserDTO mockuserDTO= new UserDTO();
+        mockuserDTO.setUserId(1);
+        mockuserDTO.setName("FullName");
+        mockuserDTO.setUserRole(TaskTrackerConstant.REGISTRATION_ROLE_USER);
 
+        try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
+            mocked.when(TaskTrackerInterceptor::getUserDetails).thenReturn(mockuserDTO);
 
             // Mocking taskInfoRepository
             List<Object[]> taskInfoDTOList = new ArrayList<>();
@@ -61,7 +65,42 @@ public class TaskInfoServiceImplTest {
             List<TaskInfoDTO> result = taskInfoService.getAllActiveTasks();
             assertNotNull(result);
             assertEquals(1, result.size());
+            verify(taskInfoRepository, times(1)).findAllByDeleteFlagAndTaskAssignee(TaskTrackerConstant.DELETE_FLAG_FALSE, 1);
 
+        }
+
+
+    }
+
+
+    @Test
+    public void testGetAllActiveTasks_Admin_Success() {
+
+        UserDTO mockuserDTO= new UserDTO();
+        mockuserDTO.setUserId(1);
+        mockuserDTO.setName("FullName");
+        mockuserDTO.setUserRole(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN);
+
+        try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
+            mocked.when(TaskTrackerInterceptor::getUserDetails).thenReturn(mockuserDTO);
+
+            // Mocking taskInfoRepository
+            List<Object[]> taskInfoDTOList = new ArrayList<>();
+            TaskInfo taskInfo=new TaskInfo();
+            taskInfo.setTaskId(1);
+
+            Object[] row =new Object[1];
+            row[0]=taskInfo;
+
+            taskInfoDTOList.add(row);
+
+            when(taskInfoRepository.findAllByDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE)).thenReturn(taskInfoDTOList);
+
+            // Testing
+            List<TaskInfoDTO> result = taskInfoService.getAllActiveTasks();
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            verify(taskInfoRepository, times(1)).findAllByDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
 
         }
 
@@ -71,15 +110,16 @@ public class TaskInfoServiceImplTest {
 
 
 
-
-
     @Test
     public void testGetAllActiveTasksAssignedDue_User_Success() {
 
-        try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserName).thenReturn("admin");
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserRole).thenReturn(TaskTrackerConstant.REGISTRATION_ROLE_USER);
+        UserDTO mockuserDTO= new UserDTO();
+        mockuserDTO.setUserId(1);
+        mockuserDTO.setName("FullName");
+        mockuserDTO.setUserRole(TaskTrackerConstant.REGISTRATION_ROLE_USER);
 
+        try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
+            mocked.when(TaskTrackerInterceptor::getUserDetails).thenReturn(mockuserDTO);
 
             // Mocking taskInfoRepository
             LocalDateTime currentDateTime = LocalDateTime.now();
@@ -91,6 +131,8 @@ public class TaskInfoServiceImplTest {
             TaskInfo taskInfo=new TaskInfo();
             taskInfo.setTaskId(1);
             taskInfo.setTaskName("Task1");
+            taskInfo.setTaskAssignee(1);
+            taskInfo.setTaskStatus(TaskTrackerConstant.TASK_STATUS_COMPLETE);
 
             Object[] row =new Object[1];
             row[0]=taskInfo;
@@ -104,43 +146,54 @@ public class TaskInfoServiceImplTest {
             List<TaskInfoDTO> result = taskInfoService.getAllActiveTasksAssignedDue();
             assertNotNull(result);
             assertEquals(1, result.size());
+            verify(taskInfoRepository, times(1)).findAllByDeleteFlagAndTaskAssigneeAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, 1, currentDate, TaskTrackerConstant.TASK_STATUS_COMPLETE);
         }
 
     }
+
 
 
 
     @Test
-    public void testDeleteTask_Admin_Success() {
+    public void testGetAllActiveTasksAssignedDue_Admin_Success() {
+
+        UserDTO mockuserDTO= new UserDTO();
+        mockuserDTO.setUserId(1);
+        mockuserDTO.setName("FullName");
+        mockuserDTO.setUserRole(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN);
 
         try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserName).thenReturn("admin");
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserRole).thenReturn(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN);
-
-
+            mocked.when(TaskTrackerInterceptor::getUserDetails).thenReturn(mockuserDTO);
 
             // Mocking taskInfoRepository
-            TaskInfo taskInfo = new TaskInfo();
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime endOfDay = currentDateTime.withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+            Timestamp currentDate = Timestamp.valueOf(endOfDay);
+
+
+            List<Object[]> taskInfoDTOList = new ArrayList<>();
+            TaskInfo taskInfo=new TaskInfo();
             taskInfo.setTaskId(1);
-            when(taskInfoRepository.findByDeleteFlagAndTaskId(eq(TaskTrackerConstant.DELETE_FLAG_FALSE), eq(1))).thenReturn(Optional.of(taskInfo));
-            when(taskInfoRepository.save(any(TaskInfo.class))).thenReturn(taskInfo);
+            taskInfo.setTaskName("Task1");
+            taskInfo.setTaskAssignee(1);
+            taskInfo.setTaskStatus(TaskTrackerConstant.TASK_STATUS_COMPLETE);
 
-            // Mocking taskInfoMapper
-            TaskInfoDTO taskInfoDTO = new TaskInfoDTO();
-            when(taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo)).thenReturn(taskInfoDTO);
+            Object[] row =new Object[1];
+            row[0]=taskInfo;
 
-            // Mocking KafkaProducerService
-            doNothing().when(kafkaProducerService).sendMessage(anyString(), anyString());
+            taskInfoDTOList.add(row);
+
+
+            when(taskInfoRepository.findAllByDeleteFlagAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, currentDate, TaskTrackerConstant.TASK_STATUS_COMPLETE)).thenReturn(taskInfoDTOList);
 
             // Testing
-            TaskInfoDTO result = taskInfoService.deleteTask(1);
+            List<TaskInfoDTO> result = taskInfoService.getAllActiveTasksAssignedDue();
             assertNotNull(result);
-            assertEquals(taskInfoDTO, result);
-            assertEquals("TRUE",taskInfo.getDeleteFlag());
+            assertEquals(1, result.size());
+            verify(taskInfoRepository, times(1)).findAllByDeleteFlagAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, currentDate, TaskTrackerConstant.TASK_STATUS_COMPLETE);
         }
 
     }
-
 
 
 
@@ -148,9 +201,13 @@ public class TaskInfoServiceImplTest {
     @Test
     public void testCreateTask_Admin_Success() {
 
+        UserDTO mockuserDTO= new UserDTO();
+        mockuserDTO.setUserId(1);
+        mockuserDTO.setName("FullName");
+        mockuserDTO.setUserRole(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN);
+
         try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserName).thenReturn("admin");
-            mocked.when(TaskTrackerInterceptor::getLoggedInUserRole).thenReturn(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN);
+            mocked.when(TaskTrackerInterceptor::getUserDetails).thenReturn(mockuserDTO);
 
 
             // Mocking taskInfoMapper
@@ -177,9 +234,52 @@ public class TaskInfoServiceImplTest {
             TaskInfoDTO result = taskInfoService.createTask(taskInfoDTO);
             assertNotNull(result);
             assertEquals(taskInfoDTO, result);
+            verify(taskInfoRepository, times(1)).save(any());
+
         }
 
     }
+
+
+
+
+    @Test
+    public void testDeleteTask_Admin_Success() {
+
+        UserDTO mockuserDTO= new UserDTO();
+        mockuserDTO.setUserId(1);
+        mockuserDTO.setName("FullName");
+        mockuserDTO.setUserRole(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN);
+
+        try (MockedStatic<TaskTrackerInterceptor> mocked = Mockito.mockStatic(TaskTrackerInterceptor.class)) {
+            mocked.when(TaskTrackerInterceptor::getUserDetails).thenReturn(mockuserDTO);
+
+
+
+            // Mocking taskInfoRepository
+            TaskInfo taskInfo = new TaskInfo();
+            taskInfo.setTaskId(1);
+            when(taskInfoRepository.findByDeleteFlagAndTaskId(eq(TaskTrackerConstant.DELETE_FLAG_FALSE), eq(1))).thenReturn(Optional.of(taskInfo));
+            when(taskInfoRepository.save(any(TaskInfo.class))).thenReturn(taskInfo);
+
+            // Mocking taskInfoMapper
+            TaskInfoDTO taskInfoDTO = new TaskInfoDTO();
+            when(taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo)).thenReturn(taskInfoDTO);
+
+            // Mocking KafkaProducerService
+            doNothing().when(kafkaProducerService).sendMessage(anyString(), anyString());
+
+            // Testing
+            TaskInfoDTO result = taskInfoService.deleteTask(1);
+            assertNotNull(result);
+            assertEquals(taskInfoDTO, result);
+            assertEquals("TRUE",taskInfo.getDeleteFlag());
+            verify(taskInfoRepository, times(1)).save(any());
+        }
+
+    }
+
+
 
 }
 

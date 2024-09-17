@@ -1,6 +1,7 @@
 package com.nus.iss.tasktracker.service.impl;
 
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
+import com.nus.iss.tasktracker.dto.UserDTO;
 import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
 import com.nus.iss.tasktracker.model.TaskInfo;
 import com.nus.iss.tasktracker.repository.TaskInfoRepository;
@@ -38,7 +39,11 @@ public class TaskInfoServiceImpl implements TaskInfoService {
     @Transactional
     public TaskInfoDTO createTask(TaskInfoDTO requestDTO) {
 
-        int userId=1;
+        //Get details of the user who performed the action
+        UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
+        if (!StringUtils.hasText(userDTO.getName()) || !StringUtils.hasText(userDTO.getUserRole())) {
+            throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
+        }
 
         // Check if taskName is empty
         if (StringUtils.isEmpty(requestDTO.getTaskName())) {
@@ -73,33 +78,26 @@ public class TaskInfoServiceImpl implements TaskInfoService {
         }
 
         // Create a new TaskInfoDTO object
-        TaskInfo taskInfoEntity = taskInfoMapper.taskInfoToEntity(requestDTO);
+        TaskInfo taskInfo = taskInfoMapper.taskInfoToEntity(requestDTO);
 
-        taskInfoEntity.setTaskDueDate(dueDateTimestamp);
+        taskInfo.setTaskDueDate(dueDateTimestamp);
         // Set default value for delete flag
-        taskInfoEntity.setDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
+        taskInfo.setDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
 
-        // Get the values from the jwt token for created by/modified by
-        String userName = TaskTrackerInterceptor.getLoggedInUserName();
-        String userRole = TaskTrackerInterceptor.getLoggedInUserRole();
-
-        if (!StringUtils.hasText(userName) || !StringUtils.hasText(userRole)) {
-            throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
-        }
-
-        if (userRole.equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
-            taskInfoEntity.setCreatedBy(String.valueOf(userId) );
-            taskInfoEntity.setModifiedBy(String.valueOf(userId));
+        // Check if the user's role is 'ADMIN' before setting the created and modified by fields.
+        // If the user is not an admin, throw an exception to deny service access
+        if (userDTO.getUserRole().equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
+            taskInfo.setCreatedBy(userDTO.getName());
+            taskInfo.setModifiedBy(userDTO.getName());
+            // Set createdDate and modifiedDate
+            taskInfo.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
+            taskInfo.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
         }else{
             throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_NOT_ALLOWED);
         }
 
-        // Set createdDate and modifiedDate
-        taskInfoEntity.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
-        taskInfoEntity.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
-
         // Save and map to dto
-        TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
+        TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfo));
 
 
         //Emit TaskId
@@ -109,7 +107,12 @@ public class TaskInfoServiceImpl implements TaskInfoService {
     }
 public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
 
-        int userId=1;
+        //Get details of the user who performed the action
+        UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
+        if (!StringUtils.hasText(userDTO.getName()) || !StringUtils.hasText(userDTO.getUserRole())) {
+            throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
+        }
+
 
         //check if taskId is valid
          if(taskId <= 0){
@@ -140,41 +143,42 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
         Timestamp dueDateTimestamp = taskInfoMapper.toTimestamp(requestDTO.getTaskDueDate().toLocalDateTime());
 
         Optional<TaskInfo> optionalTaskInfo  = taskInfoRepository.findByDeleteFlagAndTaskId(TaskTrackerConstant.DELETE_FLAG_FALSE,taskId);
-        TaskInfo taskInfoEntity = optionalTaskInfo.get();
-        if (taskInfoEntity != null) {
-            // Update taskInfoEntity with values from requestDTO
-            taskInfoEntity.setTaskName(requestDTO.getTaskName());
-            taskInfoEntity.setTaskDescription(requestDTO.getTaskDescription());
-            taskInfoEntity.setTaskPriority(requestDTO.getTaskPriority());
-            taskInfoEntity.setTaskCategoryId(requestDTO.getTaskCategoryId());
-            taskInfoEntity.setTaskDueDate(dueDateTimestamp);
-            taskInfoEntity.setTaskAssignee(requestDTO.getTaskAssignee());
-            taskInfoEntity.setTaskRewardPoint(requestDTO.getTaskRewardPoint());
-            taskInfoEntity.setTaskStatus(requestDTO.getTaskStatus());
+        TaskInfo taskInfo=null;
+        if ( optionalTaskInfo.isPresent() ) {
+            taskInfo = optionalTaskInfo.get();
+        }
+        if (taskInfo != null) {
+            // Update taskInfo with values from requestDTO
+            taskInfo.setTaskName(requestDTO.getTaskName());
+            taskInfo.setTaskDescription(requestDTO.getTaskDescription());
+            taskInfo.setTaskPriority(requestDTO.getTaskPriority());
+            taskInfo.setTaskCategoryId(requestDTO.getTaskCategoryId());
+            taskInfo.setTaskDueDate(dueDateTimestamp);
+            taskInfo.setTaskAssignee(requestDTO.getTaskAssignee());
+            taskInfo.setTaskRewardPoint(requestDTO.getTaskRewardPoint());
+            taskInfo.setTaskStatus(requestDTO.getTaskStatus());
             // Set default value for delete flag
-            taskInfoEntity.setDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
+            taskInfo.setDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
             // Set  modifiedDate
-            taskInfoEntity.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
+            taskInfo.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
 
         }else{
             throw new RuntimeException(TaskTrackerConstant.TASK_NOT_FOUND);
         }
 
-        // Get the values from the jwt token for created by/modified by
-        String userName = TaskTrackerInterceptor.getLoggedInUserName();
-        String userRole = TaskTrackerInterceptor.getLoggedInUserRole();
 
-        if (!StringUtils.hasText(userName) || !StringUtils.hasText(userRole)) {
-            throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
-        }
-
-        if (userRole.equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
-            taskInfoEntity.setCreatedBy(String.valueOf(userId));
-            taskInfoEntity.setModifiedBy(String.valueOf(userId));
+        // Check if the user's role is 'ADMIN' before setting the created and modified by fields.
+        // If the user is not an admin, throw an exception to deny service access
+        if (userDTO.getUserRole().equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
+            taskInfo.setModifiedBy(userDTO.getName());
+            // Set modifiedDate
+            taskInfo.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
+        }else{
+            throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_NOT_ALLOWED);
         }
 
         // Save and map to dto
-        TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfoEntity));
+        TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfo));
         return result;
     }
 
@@ -182,12 +186,10 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
     @Override
     @Transactional
     public TaskInfoDTO deleteTask(int id) {
-        // Check for JWT and get logged-in user info
-        String userName = TaskTrackerInterceptor.getLoggedInUserName();
-        String userRole = TaskTrackerInterceptor.getLoggedInUserRole();
-        int userId=1;
 
-        if (!StringUtils.hasText(userName) || !StringUtils.hasText(userRole)) {
+        //Get details of the user who performed the action
+        UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
+        if (!StringUtils.hasText(userDTO.getName()) || !StringUtils.hasText(userDTO.getUserRole())) {
             throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
         }
 
@@ -196,18 +198,16 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
         if (optionalTaskInfo.isPresent()) {
             TaskInfo taskInfo = optionalTaskInfo.get();
 
-            // Check if the user is admin
-            if (userRole.equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
-                taskInfo.setCreatedBy(String.valueOf(userId));
-                taskInfo.setModifiedBy(String.valueOf(userId));
-            }
-            else{
+            // Check if the user's role is 'ADMIN' before setting the created and modified by fields.
+            // If the user is not an admin, throw an exception to deny service access
+            if (userDTO.getUserRole().equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
+                taskInfo.setModifiedBy(userDTO.getName());
+                // Set modifiedDate
+                taskInfo.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
+            }else{
                 throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_NOT_ALLOWED);
             }
 
-            // Set create/modified dates
-            taskInfo.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
-            taskInfo.setModifiedDate(Timestamp.valueOf(LocalDateTime.now()));
             // Set delete flag
             taskInfo.setDeleteFlag(TaskTrackerConstant.DELETE_FLAG_TRUE);
 
@@ -227,38 +227,32 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
     @Override
     public List<TaskInfoDTO> getAllActiveTasks(){
 
-        String userName = TaskTrackerInterceptor.getLoggedInUserName();
-        String userRole = TaskTrackerInterceptor.getLoggedInUserRole();
-        int userId=1;
-
-        if(!StringUtils.hasText(userName) || !StringUtils.hasText(userRole)){
+        //Get details of the user who performed the action
+        UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
+        if (!StringUtils.hasText(userDTO.getName()) || !StringUtils.hasText(userDTO.getUserRole())) {
             throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
         }
 
-        if (userId > 0) {
+        if (userDTO.getUserId() > 0) {
             List<TaskInfoDTO> result = new ArrayList<>();
-
-            if (userRole.equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
+            if (userDTO.getUserRole().equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
                 List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
-
                 for (Object[] row: queryResult) {
                     TaskInfo taskInfo= (TaskInfo) row[0];
                     TaskInfoDTO taskInfoDTO= taskInfoMapper.taskInfoToTaskDTO(taskInfo);
                     result.add(taskInfoDTO);
                 }
-                //return taskInfoRepository.findAllByDeleteFlag(TaskTrackerConstant.DELETE_FLAG_FALSE);
                 return result;
 
             } else {
-                List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlagAndTaskAssignee(TaskTrackerConstant.DELETE_FLAG_FALSE, userId);
-
+                List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlagAndTaskAssignee(TaskTrackerConstant.DELETE_FLAG_FALSE, userDTO.getUserId());
+                System.out.println(queryResult);
                 for (Object[] row: queryResult) {
                     TaskInfo taskInfo= (TaskInfo) row[0];
                     TaskInfoDTO taskInfoDTO= taskInfoMapper.taskInfoToTaskDTO(taskInfo);
                     result.add(taskInfoDTO);
                 }
                 return result;
-                //return taskInfoRepository.findAllByDeleteFlagAndTaskAssignee(TaskTrackerConstant.DELETE_FLAG_FALSE, currentUserInfo.getUserId());
             }
         }else{
             throw new RuntimeException(TaskTrackerConstant.USER_NOT_FOUND);
@@ -269,51 +263,49 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
     @Override
     public List<TaskInfoDTO> getAllActiveTasksAssignedDue(){
 
-        String userName = TaskTrackerInterceptor.getLoggedInUserName();
-        String userRole = TaskTrackerInterceptor.getLoggedInUserRole();
-        int userId =1;
-
-
-        if(!StringUtils.hasText(userName) || !StringUtils.hasText(userRole)){
+        //Get details of the user who performed the action
+        UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
+        if (!StringUtils.hasText(userDTO.getName()) || !StringUtils.hasText(userDTO.getUserRole())) {
             throw new RuntimeException(TaskTrackerConstant.SERVICE_ACCESS_WITHOUT_TOKEN);
         }
 
-            if (userId > 0) {
-                LocalDateTime currentDateTime = LocalDateTime.now(); // Get the current date and time
-                LocalDateTime endOfDay = currentDateTime.withHour(23).withMinute(59).withSecond(59).withNano(999999999); // Set time to end of day
-                Timestamp currentDate = Timestamp.valueOf(endOfDay); // Convert to Timestamp
 
-                List<TaskInfoDTO> result = new ArrayList<>();
-                if(userRole.equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
-                    // Get tasks due a day before or already overdue for admin
-                    List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlagAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, currentDate, TaskTrackerConstant.TASK_STATUS_COMPLETE);
+        if (userDTO.getUserId() > 0) {
+            LocalDateTime currentDateTime = LocalDateTime.now(); // Get the current date and time
+            LocalDateTime endOfDay = currentDateTime.withHour(23).withMinute(59).withSecond(59).withNano(999999999); // Set time to end of day
+            Timestamp currentDate = Timestamp.valueOf(endOfDay); // Convert to Timestamp
 
-                    for (Object[] row: queryResult) {
-                        TaskInfo taskInfo= (TaskInfo) row[0];
-                        TaskInfoDTO taskInfoDTO= taskInfoMapper.taskInfoToTaskDTO(taskInfo);
-                        result.add(taskInfoDTO);
-                    }
-                    return result;
+            List<TaskInfoDTO> result = new ArrayList<>();
+            if(userDTO.getUserRole().equals(TaskTrackerConstant.REGISTRATION_ROLE_ADMIN)) {
+                // Get tasks due a day before or already overdue for admin
+                List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlagAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, currentDate, TaskTrackerConstant.TASK_STATUS_COMPLETE);
 
-                }else{
-
-                    // Get tasks due a day before or already overdue for non admin
-                    List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlagAndTaskAssigneeAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, userId, currentDate,TaskTrackerConstant.TASK_STATUS_COMPLETE);
-
-                    for (Object[] row: queryResult) {
-                        TaskInfo taskInfo= (TaskInfo) row[0];
-                        TaskInfoDTO taskInfoDTO= taskInfoMapper.taskInfoToTaskDTO(taskInfo);
-                        result.add(taskInfoDTO);
-                    }
-                    return result;
+                for (Object[] row: queryResult) {
+                    TaskInfo taskInfo= (TaskInfo) row[0];
+                    TaskInfoDTO taskInfoDTO= taskInfoMapper.taskInfoToTaskDTO(taskInfo);
+                    result.add(taskInfoDTO);
                 }
+                return result;
 
-            }
-            else{
-                throw new RuntimeException(TaskTrackerConstant.USER_NOT_FOUND);
+            }else{
+
+                // Get tasks due a day before or already overdue for non admin
+                List<Object[]> queryResult = taskInfoRepository.findAllByDeleteFlagAndTaskAssigneeAndTaskDueDateLessThanEqualAndTaskStatusNot(TaskTrackerConstant.DELETE_FLAG_FALSE, userDTO.getUserId(), currentDate,TaskTrackerConstant.TASK_STATUS_COMPLETE);
+
+                for (Object[] row: queryResult) {
+                    TaskInfo taskInfo= (TaskInfo) row[0];
+                    TaskInfoDTO taskInfoDTO= taskInfoMapper.taskInfoToTaskDTO(taskInfo);
+                    result.add(taskInfoDTO);
+                }
+                return result;
             }
 
         }
+        else{
+            throw new RuntimeException(TaskTrackerConstant.USER_NOT_FOUND);
+        }
+
+    }
 
 
 
