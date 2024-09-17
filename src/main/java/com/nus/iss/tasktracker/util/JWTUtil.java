@@ -29,7 +29,6 @@ public class JWTUtil {
         String jwtToken = null;
 
         //FIXME - REPLACE DEPRECATED METHOD
-
         Claims claims = Jwts.claims().subject(userDTO.getUsername()).build();
         log.info("Claims: {}",claims);
 
@@ -39,14 +38,18 @@ public class JWTUtil {
         log.info("hmacKey: {}",hmacKey);
 
         jwtToken = Jwts.builder()
-                    .issuer(TaskTrackerConstant.JWT_ISSUER)
-                    .claims(claims)
-                    .claim("auth", userDTO.getUserRole())
-                    .id(UUID.randomUUID().toString())
-                    .issuedAt(Date.from(Instant.now()))
-                    .expiration(Date.from(Instant.now().plus(jwtTokenExpiryInMins, ChronoUnit.MINUTES)))
-                    .signWith(hmacKey)
-                    .compact();
+                .issuer(TaskTrackerConstant.JWT_ISSUER)
+                .claims(claims)
+                .claim("auth", userDTO.getUserRole())
+                .claim("fullName", userDTO.getName())
+                .claim("userId", userDTO.getUserId())
+                .claim("userName", userDTO.getUsername())
+                .claim("groupId", userDTO.getGroupId())
+                .id(UUID.randomUUID().toString())
+                .issuedAt(Date.from(Instant.now()))
+                .expiration(Date.from(Instant.now().plus(jwtTokenExpiryInMins, ChronoUnit.MINUTES)))
+                .signWith(hmacKey)
+                .compact();
 
         log.info("JWT Token: {}",jwtToken);
 
@@ -54,7 +57,7 @@ public class JWTUtil {
     }
 
     public String[] validateJWT(String jwtString){
-        String[] subjectRoleValues = new String[2];
+        String[] subjectRoleValues = new String[6];
 
         //FIXME - REPLACE DEPRECATED APIs
         Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret),
@@ -72,6 +75,15 @@ public class JWTUtil {
             log.info("jwt token subject / username: {}",subjectRoleValues[0]);
             subjectRoleValues[1] = (String)jwt.getPayload().get("auth");
             log.info("jwt token auth: {}",subjectRoleValues[1]);
+
+            subjectRoleValues[2] = (String)jwt.getPayload().get("fullName");
+            log.info("jwt token fullName: {}",subjectRoleValues[2]);
+            subjectRoleValues[3] = Integer.toString((Integer)jwt.getPayload().get("userId"));
+            log.info("jwt token userId: {}",subjectRoleValues[3]);
+            subjectRoleValues[4] = (String)jwt.getPayload().get("userName");
+            log.info("jwt token userName: {}",subjectRoleValues[4]);
+            subjectRoleValues[5] = Integer.toString((Integer)jwt.getPayload().get("groupId"));
+            log.info("jwt token groupId: {}",subjectRoleValues[5]);
 
         } catch(ExpiredJwtException expiredJwtException){
             log.error("Auth Token Expired: {}",expiredJwtException.getMessage());

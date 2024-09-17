@@ -61,7 +61,7 @@ public class TaskTrackerFilter  implements Filter {
             } else{
                 log.info("TOKEN IS {}",token);
                 String[] subjectRoleValues = jwtUtil.validateJWT(token);
-                if((subjectRoleValues==null) || (subjectRoleValues.length!=2) ||
+                if((subjectRoleValues==null) || (subjectRoleValues.length!=6) ||
                         (!StringUtils.hasText(subjectRoleValues[0])) || (!StringUtils.hasText(subjectRoleValues[1]))){
                     isTokenValid = false;
                 }
