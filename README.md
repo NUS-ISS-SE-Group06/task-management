@@ -38,20 +38,47 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    # To check MySQL container is running
    docker ps
    
-   # Create the database and tables, navigate to the resources/db folder and run the following commands with replacing the placeholders.
-   docker exec -i mysql mysql -u root -p<enter-password> < <path-to-file>/create_database.sql   
-   docker exec -i mysql mysql -u root -p<enter-password> <database name> < <path-to-file>/insert_user_group_category_records.sql   
+   # Access the MySQL Console
+   # docker exec -it <container-name> mysql -u <database-username> -p
+   #
+   docker exec -it mysql mysql -u root -p
    
-    # Access the MySQL Monitor
-   docker exec -it <container-name> mysql -u root -p
    
-   #example MySQL command:
-   #mysql> USE <database-name>;
-   #mysql> SHOW DATABASES;
-   #mysql> SHOW TABLES;
-   #mysql> SHOW PROCESSLIST;
-   #mysql> DESCRIBE <table>;
-   #mysql> SELECT VERSION();
+   # Copy files from your local drive into a Docker container
+   # docker cp <source-file-path>  <container-name>: ./<destination-path>
+   # 
+   # Example, how to copy files from your local drive to the Docker container at the path: `/tmp/`
+   # Source-file-path as the following
+   # > ls
+   # create_database_taskmanagement.sql      insert_category_records.sql
+   #
+   docker cp create_database_taskmanagement.sql mysql:./tmp/
+   docker cp insert_category_records.sql mysql:./tmp/
+   
+   
+   # Execute sql file in  the MySQL Console
+   # mysql> source <path-to-the-file>
+   #
+   # Example, how to execute SQL files inside a Docker container
+   # Source-file-path as the following
+   # > ls /tmp
+   # create_database_taskmanagement.sql     insert_category_records.sql
+   # 
+   # Execute the following in mysql console 
+   # mysql>
+           source ./tmp/create_database_taskmanagement.sql;
+           source ./tmp/insert_category_record.sql;
+   
+   
+   #Example MySQL command:
+   # Execute the following in mysql console 
+   # mysql>
+           use <database-name>;
+           show database;
+           show tables;
+           show processlist;
+           describe <table>;
+           select version();
    
    # Backup a Database
    docker exec mysql mysql -u root -p<password> my_database > /path/to/backup/my_database_backup.sql
