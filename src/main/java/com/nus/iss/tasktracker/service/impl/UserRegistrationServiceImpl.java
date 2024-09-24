@@ -7,7 +7,6 @@ package com.nus.iss.tasktracker.service.impl;
 // import com.nus.iss.tasktracker.model.UserInfo;
 // import com.nus.iss.tasktracker.repository.UserInfoRepository;
 // import com.nus.iss.tasktracker.service.GroupInfoService;
-import com.nus.iss.tasktracker.service.UserRegistrationService;
 //import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 //import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class UserRegistrationServiceImpl implements UserRegistrationService {
+public class UserRegistrationServiceImpl {
 /*
     private  final UserInfoRepository userInfoRepository;
     private final GroupInfoService groupInfoService;
