@@ -1,6 +1,6 @@
 package com.nus.iss.tasktracker.service.impl;
 
-//import com.nus.iss.tasktracker.mapper.TaskInfoMapper;
+import com.nus.iss.tasktracker.dto.UserDTO;
 import com.nus.iss.tasktracker.service.KafkaConsumerService;
 import com.nus.iss.tasktracker.service.TaskInfoService;
 import com.nus.iss.tasktracker.util.KafkaTopics;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
 
 @Service
 public class KafkaConsumerServiceImpl implements KafkaConsumerService {
@@ -51,8 +52,9 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
     public void handleUserInfoDeleted(String message) {
 
         System.out.println("Handling UserInfoDeleted: " + message);
-        //Todo: ReleaseActiveTask by UserId
-        //taskInfoService.releaseActiveTaskAssignedToUser("1");
+        //Get details of the user who performed the action
+        UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
+        taskInfoService.releaseActiveTaskAssignedToUser(userDTO.getUserId());
     }
 
     @Override
