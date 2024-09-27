@@ -1,5 +1,7 @@
 name: dev_test_build
 on:
+  # trigger for CI
+  workflow_dispatch:
   # This workflow is automatically triggered upon a push request to the development branch. 
   # The test-build : indicating whether your code commits are not breaking during compilation.
   # The unit-test : indicating whether your functionalities are not breaking.
