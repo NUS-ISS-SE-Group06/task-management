@@ -1,0 +1,148 @@
+name: prd_deploy
+
+on:
+  # trigger for deployment
+  workflow_dispatch:
+
+jobs:
+  create_uat_package:
+    runs-on: ubuntu-latest
+    env:
+      STAGING_DIR: prd_staging
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout Source Codes
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: maven
+
+      - name: Cache Maven Packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            target
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: List Contents of target Directory
+        run: ls -R target
+
+      - name: Create Staging Directory
+        run: |
+          mkdir ${{ env.STAGING_DIR }}
+          cp target/*.war ${{ env.STAGING_DIR }}
+
+      - name: Upload Staging Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uat_package
+          path: ${{ env.STAGING_DIR }}
+          overwrite: true
+          if-no-files-found: error
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: maven
+
+      - name: Cache Maven Packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            target
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: List Contents of target Directory
+        run: ls -R target
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          # Log in to Docker Hub using the username and password stored in GitHub Secrets
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          
+          # Build and push the Docker image for multiple platforms (e.g., amd64 and arm64)
+          docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/taskmanagement-prd:latest --push .
+
+#  deploy_to_digitalocean:
+#    needs: build-and-push
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Deploy to DigitalOcean
+#        env:
+#          DIGITALOCEAN_SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_PRIVATE_KEY }}
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          CONTAINER_NAME: "task-tracker-api"
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "$DIGITALOCEAN_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          ssh-keyscan -t rsa 139.59.232.88 >> ~/.ssh/known_hosts
+#
+#          # Stop the container if it is running
+#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker stop $CONTAINER_NAME || true"
+#
+#          # Remove the container if it exists
+#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker rm -f $CONTAINER_NAME || true"
+#
+#          # Remove the image
+#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker rmi -f $DOCKER_USERNAME/nus-iss-task-tracker:latest"
+#
+#          docker pull $DOCKER_USERNAME/nus-iss-task-tracker:latest
+#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker run -d --name $CONTAINER_NAME -p 8688:8688 $DOCKER_USERNAME/nus-iss-task-tracker:latest"
+
+#  deploy_to_digitalocean_dr:
+#    needs: build-and-push
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Deploy to DigitalOcean
+#        env:
+#          DIGITALOCEAN_SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_PRIVATE_KEY }}
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          CONTAINER_NAME: "task-tracker-api"
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "$DIGITALOCEAN_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          ssh-keyscan -t rsa 128.199.134.155 >> ~/.ssh/known_hosts
+#
+#          # Stop the container if it is running
+#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker stop $CONTAINER_NAME || true"
+#
+#          # Remove the container if it exists
+#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker rm -f $CONTAINER_NAME || true"
+#
+#          # Remove the image
+#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker rmi -f $DOCKER_USERNAME/nus-iss-task-tracker:latest"
+#
+#          docker pull $DOCKER_USERNAME/nus-iss-task-tracker:latest
+#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker run -d --name $CONTAINER_NAME -p 8688:8688 $DOCKER_USERNAME/nus-iss-task-tracker:latest"
+#
