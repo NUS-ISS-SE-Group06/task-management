@@ -32,7 +32,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         System.out.println("addCorsMappings called");
         registry.addMapping("/**")  // Allows CORS requests to all endpoints
-                .allowedOrigins("http://165.22.100.234:3000")  // Replace with the IP of your React app
+                .allowedOrigins("http://localhost:3000")  // Replace with the IP of your React app
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allowed HTTP methods
                 .allowedHeaders("*")  // Allows all headers
                 .allowCredentials(true);
