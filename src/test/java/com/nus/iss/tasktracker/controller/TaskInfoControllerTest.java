@@ -36,8 +36,11 @@ public class TaskInfoControllerTest {
     @MockBean
     private TaskInfoServiceImpl taskInfoService;
 
+    //comment TTP2-34
+    /*
     @MockBean
     private UserInfoServiceImpl userInfoService;
+    */
 
     @MockBean
     private JWTUtil jwtUtil;
