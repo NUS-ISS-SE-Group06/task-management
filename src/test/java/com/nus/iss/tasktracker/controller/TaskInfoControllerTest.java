@@ -3,7 +3,7 @@ package com.nus.iss.tasktracker.controller;
 import com.nus.iss.tasktracker.dto.TaskInfoDTO;
 import com.nus.iss.tasktracker.dto.UserDTO;
 import com.nus.iss.tasktracker.service.impl.TaskInfoServiceImpl;
-import com.nus.iss.tasktracker.service.impl.UserInfoServiceImpl;
+//import com.nus.iss.tasktracker.service.impl.UserInfoServiceImpl;//comment TTP2-36
 import com.nus.iss.tasktracker.util.JWTUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
