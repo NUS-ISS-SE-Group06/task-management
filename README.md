@@ -147,6 +147,9 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    # Check minikube status
    minikube status
    
+   # Trigger the Kubernetes deployment
+   kubectl rollout restart deployment/<input-deployment-name>
+   
 
    ```
 
