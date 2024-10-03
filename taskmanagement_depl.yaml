@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: taskmanagement-depl
   name: taskmanagement-depl
+  labels:
+    app: taskmanagement-api
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: taskmanagement-depl
+      app: taskmanagement-api
   template:
     metadata:
       labels:
-        app: taskmanagement-depl
+        app: taskmanagement-api
     spec:
       containers:
-      - name: taskmanagement-uat
-        image: nusissgroup6/taskmanagement-uat
+      - name: taskmanagement-prd
+        image: nusissgroup6/taskmanagement-prd:latest
         ports:
         - containerPort: 8688
         env:
@@ -25,23 +25,46 @@ spec:
             configMapKeyRef:
               name: taskmanagement-configs
               key: SPRING_PROFILES_ACTIVE
+
         - name: SPRING_DATASOURCE_URL
           valueFrom:
             configMapKeyRef:
               name: taskmanagement-configs
               key: SPRING_DATASOURCE_URL
+
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
               name: taskmanagement-secrets
               key: DB_USERNAME
+
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: taskmanagement-secrets
               key: DB_PASSWORD
+
         - name: TASK_TRACKER_JWT_SECRET
           valueFrom:
             secretKeyRef:
               name: taskmanagement-secrets
               key: TASK_TRACKER_JWT_SECRET
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: taskmanagement-api
+  name: taskmanagement-depl
+  namespace: default
+spec:
+  selector:
+    app: taskmanagement-api
+  ports:
+    - protocol: TCP
+      port: 8688
+      targetPort: 8688
+  type: LoadBalancer
