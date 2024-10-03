@@ -11,7 +11,8 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
-    path: "/Users/onggowahyudi/mysql-data"
+    path: "/data/mysql-data"
+    type: DirectoryOrCreate
 
 ---
 
