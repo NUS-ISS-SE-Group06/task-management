@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: taskmanagement-depl
+  name: taskmanagement-depl
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: taskmanagement-depl
+  template:
+    metadata:
+      labels:
+        app: taskmanagement-depl
+    spec:
+      containers:
+      - name: taskmanagement-uat
+        image: nusissgroup6/taskmanagement-uat
+        ports:
+        - containerPort: 8688
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          valueFrom:
+            configMapKeyRef:
+              name: taskmanagement-configs
+              key: SPRING_PROFILES_ACTIVE
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: taskmanagement-configs
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: taskmanagement-secrets
+              key: DB_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: taskmanagement-secrets
+              key: DB_PASSWORD
+        - name: TASK_TRACKER_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: taskmanagement-secrets
+              key: TASK_TRACKER_JWT_SECRET
