@@ -93,7 +93,27 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    
    
    ```
-2. 
+
+
+### Installation Minikube
+
+   ```bash
+   # Install the latest minikube
+   brew install minikube
+   
+    # Start Minikube
+   minikube start --driver=docker
+    
+   # Check minikube status
+   minikube status
+   
+   # To use docker inside minikube
+   minikube docker-env
+   eval $(minikube -p minikube docker-env)
+
+   
+   ```
+
 ### Installation
 
 1. **Clone the Repository:**
@@ -134,7 +154,51 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    ```bash
    docker compose up
    ```
-   
+
+
+2.
+### Installation
+
+1. **Clone the Repository:**
+
+   ```bash
+   git https://github.com/NUS-ISS-SE-Group06/task-management.git
+   cd task-management
+   ```
+
+2. **Build the Project:**
+
+   Use Maven to build the project:
+
+   ```bash
+   mvn clean install
+   ```
+
+3. **Run the Application:**
+
+   Start the Spring Boot application:
+
+   ```bash
+   mvn spring-boot:run
+   ```
+
+   Alternatively, you can run the packaged JAR file:
+
+   ```bash
+   java -jar target/task-tracker-api-0.0.1-SNAPSHOT.jar
+   ```
+3. **🐳 Alternatively, build the Docker image:**
+
+   ```bash
+   docker build -t task-management .
+   ```
+
+3. **🐳 Run the Docker image:**
+   ```bash
+   docker compose up
+   ```
+
+
 ### Configuration 
 
 The application can be configured via the `application.yml` or `application.properties` file located in the `src/main/resources` directory. Key configurations include:

@@ -22,7 +22,7 @@ metadata:
 spec:
   storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOncemin
   resources:
     requests:
       storage: 2Gi
