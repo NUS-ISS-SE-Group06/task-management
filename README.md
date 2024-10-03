@@ -103,26 +103,50 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    
     # Start Minikube
    minikube start --driver=docker
-    
-   # Check minikube status
+       
+   # Minikube status
    minikube status
+   
+    # Get Minikube IP
+   minikube ip
+   
+   # Minikube dashboard
+   minikube dashboard
    
    # To use docker inside minikube
    minikube docker-env
    eval $(minikube -p minikube docker-env)
-
-   # To get springboot URL
-   # kubectl get service
-   minikube service <input-service-name> --url
    
-   # Port forwarding for Kubernetes service
-   # kubectl get service
-   # taskmanagement-depl   NodePort    10.107.193.146   <none>        8688:30007/TCP   5m53s
-   # http://localhost:3088/
-   #
-    kubectl port-forward svc/<input-service-name>  3088:8688
+   
+   # MySql Kubernetes scripts
+   kubectl apply -f mysql_secrets.yaml 
+   kubectl get secret
+   kubectl apply -f mysql_storage.yaml 
+   kubectl get pv 
+   kubectl get pvc
+   kubectl apply -f mysql_depl.yaml
+   kubectl get deployment
+   kubectl get service
+   kubectl get pods
 
+    # TaskManagement Kubernetes scripts
+   kubectl apply -f taskmanagement_secrets.yaml 
+   kubectl get secret
+   kubectl apply -f taskmanagement_configmaps.yaml 
+   kubectl get configmap
+   kubectl apply -f taskmanagement_depl.yaml
+   kubectl get deployment
+   kubectl get service
+   kubectl get pods
 
+   # Start the Minikube Tunnel to expose LoadBalancer service to your local machine
+   # Open this tunnel for development
+    minikube tunnel
+    kubectl get service
+
+   # Check minikube status
+   minikube status
+   
 
    ```
 
