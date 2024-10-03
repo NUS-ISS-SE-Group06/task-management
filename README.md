@@ -128,6 +128,9 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    kubectl get deployment
    kubectl get service
    kubectl get pods
+   # Start Volume/Mount Process - Keep alive
+   minikube mount /Users/<input-folder-name>/mysql-data:/data/mysql-data
+
 
     # TaskManagement Kubernetes scripts
    kubectl apply -f taskmanagement_secrets.yaml 
