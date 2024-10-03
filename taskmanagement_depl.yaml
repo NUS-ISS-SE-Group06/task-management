@@ -56,7 +56,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: taskmanagement-service
+  labels:
+    app: taskmanagement-api
+  name: taskmanagement-depl
+  namespace: default
 spec:
   selector:
     app: taskmanagement-api
@@ -64,4 +67,5 @@ spec:
     - protocol: TCP
       port: 8688
       targetPort: 8688
+      nodePort: 30007
   type: NodePort

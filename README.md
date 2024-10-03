@@ -111,7 +111,19 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    minikube docker-env
    eval $(minikube -p minikube docker-env)
 
+   # To get springboot URL
+   # kubectl get service
+   minikube service <input-service-name> --url
    
+   # Port forwarding for Kubernetes service
+   # kubectl get service
+   # taskmanagement-depl   NodePort    10.107.193.146   <none>        8688:30007/TCP   5m53s
+   # http://localhost:3088/
+   #
+    kubectl port-forward svc/<input-service-name>  3088:8688
+
+
+
    ```
 
 ### Installation
