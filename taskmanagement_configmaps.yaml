@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: taskmanagement-configs
 data:
-  SPRING_PROFILES_ACTIVE: "dev"
-  SPRING_DATASOURCE_URL: "jdbc:mysql://localhost:3306/taskmanagement"
+  SPRING_PROFILES_ACTIVE: "prd"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/taskmanagement"ge
