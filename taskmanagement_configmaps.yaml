@@ -4,4 +4,4 @@ metadata:
   name: taskmanagement-configs
 data:
   SPRING_PROFILES_ACTIVE: "prd"
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/taskmanagement"ge
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/taskmanagement"
