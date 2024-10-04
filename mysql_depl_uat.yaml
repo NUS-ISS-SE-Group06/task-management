@@ -1,0 +1,47 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-depl-uat
+spec:
+  selector:
+    matchLabels:
+      app: mysql-uat
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql-uat
+    spec:
+      containers:
+      - image: mysql:latest
+        name: mysql-uat
+        env:
+        - name: MYSQL_ROOT_PASSWORD        # Set the MySQL root password
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret-uat
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql-uat
+        volumeMounts:
+        - name: mysql-persistent-storage-uat
+          mountPath: /var/lib/mysql        # MySQL data directory
+      volumes:
+      - name: mysql-persistent-storage-uat
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim-uat        # Link to PVC created earlier
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service-uat
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql-uat
