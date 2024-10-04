@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface TaskInfoService {
 
-    TaskInfoDTO createTask(TaskInfoDTO requestDTO);
-    TaskInfoDTO deleteTask(int id);
+    TaskInfoDTO createTask(TaskInfoDTO requestDTO); 
+    TaskInfoDTO deleteTask(int id); 
 
     List<TaskInfoDTO> getAllActiveTasks();
 
