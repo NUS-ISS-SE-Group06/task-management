@@ -1,8 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prd
+
+---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-depl
+  namespace: prd
 spec:
   selector:
     matchLabels:
@@ -40,6 +47,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql-service
+  namespace: prd
 spec:
   ports:
     - port: 3306

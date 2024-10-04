@@ -1,7 +1,15 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: prd
+
+---
+
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: taskmanagement-configs
+  namespace: prd
 data:
   SPRING_PROFILES_ACTIVE: "prd"
   SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service:3306/taskmanagement"
