@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: prd
+  name: uat
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: mysql-pv
+  name: mysql-pv-uat
 spec:
   capacity:
     storage: 2Gi
@@ -17,7 +17,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
-    path: "/data/mysql-data"
+    path: "/data/mysql-data-uat"
     type: DirectoryOrCreate
 
 ---
@@ -25,8 +25,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
-  namespace: prd
+  name: mysql-pv-claim-uat
+  namespace: uat
 spec:
   storageClassName: manual
   accessModes:
@@ -34,4 +34,4 @@ spec:
   resources:
     requests:
       storage: 2Gi
-  volumeName: mysql-pv
+  volumeName: mysql-pv-uat
