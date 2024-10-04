@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Source Codes
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: dev
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -54,7 +54,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: dev
 
       - name: Set up JDK
         uses: actions/setup-java@v4
