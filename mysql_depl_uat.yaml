@@ -24,7 +24,7 @@ spec:
               name: mysql-secret-uat
               key: password
         ports:
-        - containerPort: 3305
+        - containerPort: 3306
           name: mysql-uat
         volumeMounts:
         - name: mysql-persistent-storage-uat
@@ -43,6 +43,6 @@ metadata:
   namespace: uat
 spec:
   ports:
-    - port: 3305
+    - port: 3306
   selector:
     app: mysql-uat
