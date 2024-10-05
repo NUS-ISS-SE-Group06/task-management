@@ -101,11 +101,9 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    # Install the latest minikube
    brew install minikube
    
-    # Start Minikube
+   # Start Minikube
    minikube start --driver=docker
-       
-   # Minikube status
-   minikube status
+   minikube satus
    
     # Get Minikube IP
    minikube ip
@@ -129,7 +127,7 @@ The **Task Tracker API** is a backend service built using Java Spring Boot. This
    kubectl get service
    kubectl get pods
    # Start Volume/Mount Process - Keep alive
-   minikube mount /Users/<input-folder-name>/mysql-data:/data/mysql-data
+   minikube mount /Users/<input-folder-name>/mysql-data:/mnt/data
 
 
     # TaskManagement Kubernetes scripts
