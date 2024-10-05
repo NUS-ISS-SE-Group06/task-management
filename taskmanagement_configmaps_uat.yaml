@@ -1,15 +1,8 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: uat
-
----
-
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: taskmanagement-configs-uat
   namespace: uat
 data:
   SPRING_PROFILES_ACTIVE: "dev"
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service-uat:3306/taskmanagement"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service-uat:3305/taskmanagement"
