@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  create_uat_package:
+  create_prd_package:
     runs-on: ubuntu-latest
     env:
       STAGING_DIR: prd_staging
@@ -50,6 +50,7 @@ jobs:
 
   build-and-push:
     runs-on: ubuntu-latest
+    needs: create_prd_package
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -90,59 +91,35 @@ jobs:
           echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
           
           # Build and push the Docker image for multiple platforms (e.g., amd64 and arm64)
-          docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/taskmanagement-prd:latest --push .
+          docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_USERNAME/taskmanagement-prd:${{ github.sha }} --push .
 
-#  deploy_to_digitalocean:
-#    needs: build-and-push
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Deploy to DigitalOcean
-#        env:
-#          DIGITALOCEAN_SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_PRIVATE_KEY }}
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          CONTAINER_NAME: "task-tracker-api"
-#        run: |
-#          mkdir -p ~/.ssh
-#          echo "$DIGITALOCEAN_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-#          chmod 600 ~/.ssh/id_rsa
-#          ssh-keyscan -t rsa 139.59.232.88 >> ~/.ssh/known_hosts
-#
-#          # Stop the container if it is running
-#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker stop $CONTAINER_NAME || true"
-#
-#          # Remove the container if it exists
-#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker rm -f $CONTAINER_NAME || true"
-#
-#          # Remove the image
-#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker rmi -f $DOCKER_USERNAME/nus-iss-task-tracker:latest"
-#
-#          docker pull $DOCKER_USERNAME/nus-iss-task-tracker:latest
-#          ssh -o StrictHostKeyChecking=no root@139.59.232.88 "docker run -d --name $CONTAINER_NAME -p 8688:8688 $DOCKER_USERNAME/nus-iss-task-tracker:latest"
+  deploy_to_digitalocean_kubernetes:
+    needs: build-and-push
+    runs-on: ubuntu-latest
 
-#  deploy_to_digitalocean_dr:
-#    needs: build-and-push
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Deploy to DigitalOcean
-#        env:
-#          DIGITALOCEAN_SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_PRIVATE_KEY }}
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          CONTAINER_NAME: "task-tracker-api"
-#        run: |
-#          mkdir -p ~/.ssh
-#          echo "$DIGITALOCEAN_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-#          chmod 600 ~/.ssh/id_rsa
-#          ssh-keyscan -t rsa 128.199.134.155 >> ~/.ssh/known_hosts
-#
-#          # Stop the container if it is running
-#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker stop $CONTAINER_NAME || true"
-#
-#          # Remove the container if it exists
-#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker rm -f $CONTAINER_NAME || true"
-#
-#          # Remove the image
-#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker rmi -f $DOCKER_USERNAME/nus-iss-task-tracker:latest"
-#
-#          docker pull $DOCKER_USERNAME/nus-iss-task-tracker:latest
-#          ssh -o StrictHostKeyChecking=no root@128.199.134.155 "docker run -d --name $CONTAINER_NAME -p 8688:8688 $DOCKER_USERNAME/nus-iss-task-tracker:latest"
-#
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install doctl (DigitalOcean CLI)
+        run: |
+          curl -sL https://github.com/digitalocean/doctl/releases/download/v1.115.0/doctl-1.115.0-linux-amd64.tar.gz | tar -xzv
+          sudo mv doctl /usr/local/bin
+
+      - name: Authenticate with DigitalOcean
+        run: doctl auth init -t ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          doctl kubernetes cluster kubeconfig save 77c86425-2a82-4012-beda-18a1a12979ae
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/prd/service/taskmanagement_namespace.yaml
+          kubectl apply -f k8s/prd/service/taskmanagement_secrets.yaml
+          kubectl apply -f k8s/prd/service/taskmanagement_configmaps.yaml
+          sed -i "s|image: $DOCKER_USERNAME/taskmanagement-prd:.*|image: $DOCKER_USERNAME/taskmanagement-prd:${{ github.sha }}|" k8s/prd/service/taskmanagement_depl.yaml
+          kubectl apply -f k8s/prd/service/taskmanagement_depl.yaml
+          kubectl apply -f k8s/prd/service/taskmanagement_depl_hpa.yaml

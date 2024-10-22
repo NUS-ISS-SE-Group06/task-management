@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taskmanagement-configs-uat
+  namespace: uat
+data:
+  SPRING_PROFILES_ACTIVE: "dev"

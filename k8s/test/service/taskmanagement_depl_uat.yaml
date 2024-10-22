@@ -1,23 +1,24 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: taskmanagement-depl
-  namespace: prd
+  name: taskmanagement-depl-uat
+  namespace: uat
   labels:
-    app: taskmanagement-api
+    app: taskmanagement-api-uat
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: taskmanagement-api
+      app: taskmanagement-api-uat
   template:
     metadata:
       labels:
-        app: taskmanagement-api
+        app: taskmanagement-api-uat
     spec:
       containers:
-      - name: taskmanagement-prd
-        image: nusissgroup6/taskmanagement-prd:latest
+      - name: taskmanagement-uat
+        image: nusissgroup6/taskmanagement-uat:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8688
@@ -25,31 +26,31 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
-              name: taskmanagement-configs
+              name: taskmanagement-configs-uat
               key: SPRING_PROFILES_ACTIVE
 
         - name: SPRING_DATASOURCE_URL
           valueFrom:
-            configMapKeyRef:
-              name: taskmanagement-configs
-              key: SPRING_DATASOURCE_URL
+            secretKeyRef:
+              name: taskmanagement-secrets-uat
+              key: DB_URL
 
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
-              name: taskmanagement-secrets
+              name: taskmanagement-secrets-uat
               key: DB_USERNAME
 
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: taskmanagement-secrets
+              name: taskmanagement-secrets-uat
               key: DB_PASSWORD
 
         - name: TASK_TRACKER_JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: taskmanagement-secrets
+              name: taskmanagement-secrets-uat
               key: TASK_TRACKER_JWT_SECRET
 
 
@@ -58,13 +59,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: taskmanagement-depl
-  namespace: prd
+  name: taskmanagement-depl-uat
+  namespace: uat
   labels:
-    app: taskmanagement-api
+    app: taskmanagement-api-uat
 spec:
   selector:
-    app: taskmanagement-api
+    app: taskmanagement-api-uat
   ports:
     - protocol: TCP
       port: 8688
