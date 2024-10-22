@@ -30,9 +30,9 @@ spec:
 
         - name: SPRING_DATASOURCE_URL
           valueFrom:
-            configMapKeyRef:
-              name: taskmanagement-configs
-              key: SPRING_DATASOURCE_URL
+            secretKeyRef:
+              name: taskmanagement-secrets
+              key: DB_URL
 
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:

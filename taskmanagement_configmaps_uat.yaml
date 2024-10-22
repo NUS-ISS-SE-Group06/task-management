@@ -5,4 +5,3 @@ metadata:
   namespace: uat
 data:
   SPRING_PROFILES_ACTIVE: "dev"
-  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql-service-uat:3306/taskmanagement"
