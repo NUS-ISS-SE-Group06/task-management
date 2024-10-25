@@ -117,8 +117,8 @@ jobs:
 
       - name: Update Image Tag in Deployment YAML
         run: |
-          sed -i.bak "s|image: $DOCKER_USERNAME/taskmanagement-prd:.*|image: $DOCKER_USERNAME/taskmanagement-prd:${{ github.sha }}|" k8s/prd/service/taskmanagement_depl.yaml
-          cat k8s/prd/service/taskmanagement_depl.yaml  # Optional: check if the change was applied
+          sed -i.bak "s|image: nusissgroup6/taskmanagement-prd:.*|image: nusissgroup6/taskmanagement-prd:${{ github.sha }}|" k8s/prd/service/taskmanagement_depl.yaml
+          cat k8s/prd/service/taskmanagement_depl.yaml | grep "image:"
 
       - name: Deploy to Kubernetes
         run: |
