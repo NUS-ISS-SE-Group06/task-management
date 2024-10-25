@@ -115,11 +115,15 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
           doctl kubernetes cluster kubeconfig save 77c86425-2a82-4012-beda-18a1a12979ae
 
+      - name: Update Image Tag in Deployment YAML
+        run: |
+          sed -i.bak "s|image: $DOCKER_USERNAME/taskmanagement-prd:.*|image: $DOCKER_USERNAME/taskmanagement-prd:${{ github.sha }}|" k8s/prd/service/taskmanagement_depl.yaml
+          cat k8s/prd/service/taskmanagement_depl.yaml  # Optional: check if the change was applied
+
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/prd/service/taskmanagement_namespace.yaml
           kubectl apply -f k8s/prd/service/taskmanagement_secrets.yaml
           kubectl apply -f k8s/prd/service/taskmanagement_configmaps.yaml
-          sed -i "s|image: $DOCKER_USERNAME/taskmanagement-prd:.*|image: $DOCKER_USERNAME/taskmanagement-prd:${{ github.sha }}|" k8s/prd/service/taskmanagement_depl.yaml
           kubectl apply -f k8s/prd/service/taskmanagement_depl.yaml
           kubectl apply -f k8s/prd/service/taskmanagement_depl_hpa.yaml
