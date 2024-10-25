@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KafkaProducerServiceImpl implements KafkaProducerService {
 
-    @Value("${task-tracker.kafka.enabled:false")
+    @Value("${task-tracker.kafka.enabled:false}")
     private boolean kafkaEnabled;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -36,5 +36,5 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
             log.error(e.getMessage());
         }
     }
-    
+
 }
