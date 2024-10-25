@@ -24,7 +24,6 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
         } catch (Exception e ){
             System.out.println("Failed to send message: " + e.getMessage());
             log.error(e.getMessage());
-            throw new RuntimeException("Failed to send message to Kafka");
         }
 
     }

@@ -13,7 +13,7 @@ spring:
     restart:
       enabled: true
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     producer:
       batch-size: 16384
       buffer-memory: 33554432
