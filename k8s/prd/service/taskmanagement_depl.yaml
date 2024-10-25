@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: taskmanagement-prd
-        image: nusissgroup6/taskmanagement-prd:c8e3092fe8b74ee03de6b2b684a9733dcddc0008
+        image: nusissgroup6/taskmanagement-prd:fe0325ff4098c6e266a22cd90b8d9570685cacb6
         imagePullPolicy: Always
         ports:
         - containerPort: 8688
