@@ -1,6 +1,6 @@
 services:
   task-management:
-    image: task-management:latest
+    image: task-management:ddc77857568e7f6b97d857d371d3e4597e1aad07
     ports:
       - "8688:8688"
     environment:
