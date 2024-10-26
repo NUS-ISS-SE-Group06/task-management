@@ -13,8 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Slf4j
 public class TaskTrackerApiApplication {
 	public static void main(String[] args) {
+		System.out.println("Task Tracker Application starting...");
 		SpringApplication.run(TaskTrackerApiApplication.class, args);
-		log.info("Task Tracker Application started successfully...");
+		System.out.println("Task Tracker Application started successfully...");
 	}
 
 	@Bean
