@@ -27,25 +27,16 @@ public class TaskInfoServiceImpl implements TaskInfoService {
 
     private final TaskInfoMapper taskInfoMapper;
     private final TaskInfoRepository taskInfoRepository;
-    private final KafkaProducerService kafkaProducerService;
 
     @Autowired
     public TaskInfoServiceImpl(TaskInfoMapper taskInfoMapper, TaskInfoRepository taskInfoRepository, KafkaProducerService kafkaProducerService) {
         this.taskInfoMapper = taskInfoMapper;
         this.taskInfoRepository = taskInfoRepository;
-        this.kafkaProducerService=kafkaProducerService;
     }
-
-    @Value("${task-tracker.kafka.enabled: false}")
-    private boolean kafkaEnabled;
 
     @Override
     @Transactional
     public TaskInfoDTO createTask(TaskInfoDTO requestDTO) {
-
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println("kafkaEnabled: "+kafkaEnabled);
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
         //Get details of the user who performed the action
         UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
@@ -106,11 +97,6 @@ public class TaskInfoServiceImpl implements TaskInfoService {
 
         // Save and map to dto
         TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfo));
-
-        //Emit TaskId
-        if(kafkaEnabled){
-            kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
-        }
 
         return result;
     }
@@ -225,11 +211,6 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
 
             // Convert TaskInfo to TaskInfoDTO and return
             TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo);
-
-            //Emit TaskId
-            if(kafkaEnabled){
-                kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_DELETED, String.valueOf(result.getTaskId()));
-            }
 
             return  result;
         } else {
