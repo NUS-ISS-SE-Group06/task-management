@@ -218,7 +218,7 @@ public class TaskInfoServiceImplTest {
             when(taskInfoRepository.save(any(TaskInfo.class))).thenReturn(taskInfo);
 
             // Mocking KafkaProducerService
-            doNothing().when(kafkaProducerService).sendMessage(anyString(),anyString());
+//            doNothing().when(kafkaProducerService).sendMessage(anyString(),anyString());
 
             // Mocking taskInfoMapper
             TaskInfoDTO taskInfoDTO = new TaskInfoDTO();
@@ -267,7 +267,7 @@ public class TaskInfoServiceImplTest {
             when(taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo)).thenReturn(taskInfoDTO);
 
             // Mocking KafkaProducerService
-            doNothing().when(kafkaProducerService).sendMessage(anyString(), anyString());
+//            doNothing().when(kafkaProducerService).sendMessage(anyString(), anyString());
 
             // Testing
             TaskInfoDTO result = taskInfoService.deleteTask(1);
