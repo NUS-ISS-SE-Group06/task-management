@@ -10,6 +10,7 @@ import com.nus.iss.tasktracker.service.TaskInfoService;
 import com.nus.iss.tasktracker.util.TaskTrackerConstant;
 import com.nus.iss.tasktracker.util.KafkaTopics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.nus.iss.tasktracker.interceptor.TaskTrackerInterceptor;
@@ -35,9 +36,16 @@ public class TaskInfoServiceImpl implements TaskInfoService {
         this.kafkaProducerService=kafkaProducerService;
     }
 
+    @Value("${task-tracker.kafka.enabled: false}")
+    private boolean kafkaEnabled;
+
     @Override
     @Transactional
     public TaskInfoDTO createTask(TaskInfoDTO requestDTO) {
+
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println("kafkaEnabled: "+kafkaEnabled);
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 
         //Get details of the user who performed the action
         UserDTO userDTO = TaskTrackerInterceptor.getUserDetails();
@@ -99,9 +107,10 @@ public class TaskInfoServiceImpl implements TaskInfoService {
         // Save and map to dto
         TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfoRepository.save(taskInfo));
 
-
         //Emit TaskId
-        kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+        if(kafkaEnabled){
+            kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_CREATED, String.valueOf(result.getTaskId()));
+        }
 
         return result;
     }
@@ -216,7 +225,12 @@ public TaskInfoDTO updateTask(int taskId,TaskInfoDTO requestDTO){
 
             // Convert TaskInfo to TaskInfoDTO and return
             TaskInfoDTO result = taskInfoMapper.taskInfoToTaskinfoDTO(taskInfo);
-            kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_DELETED, String.valueOf(result.getTaskId()));
+
+            //Emit TaskId
+            if(kafkaEnabled){
+                kafkaProducerService.sendMessage( KafkaTopics.TASK_INFO_DELETED, String.valueOf(result.getTaskId()));
+            }
+
             return  result;
         } else {
 

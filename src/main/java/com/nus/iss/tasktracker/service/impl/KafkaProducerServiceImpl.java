@@ -25,16 +25,16 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
     @Override
     public void sendMessage(String topic, String message) {
         try {
-            log.info("kafkaEnabled - {}", kafkaEnabled);
+            System.out.println("kafkaEnabled - {}"+ kafkaEnabled);
             if(kafkaEnabled){
                 kafkaTemplate.send(topic,message);
-                log.info("Message sent successfully to topic - {} ", topic);
+                System.out.println("Message sent successfully to topic - {} "+ topic);
             } else{
-                log.info("Message not sent to topic - {} ", topic);
+                System.out.println("Message not sent to topic - {} "+ topic);
             }
         } catch (Exception e ){
-            log.error("Failed to send message to topic: {} ", topic);
-            log.error(e.getMessage());
+            System.out.println("Failed to send message to topic: {} "+ topic);
+            System.out.println(e.getMessage());
         }
     }
 
