@@ -16,6 +16,11 @@ jobs:
         with:
           ref: main
 
+      - name: Log Branch and Commit
+        run: |
+          echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Commit: $(git rev-parse HEAD)"
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -56,6 +61,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Log Branch and Commit
+        run: |
+          echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Commit: $(git rev-parse HEAD)"
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -102,6 +112,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Log Branch and Commit
+        run: |
+          echo "Branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Commit: $(git rev-parse HEAD)"
 
       - name: Install doctl (DigitalOcean CLI)
         run: |
